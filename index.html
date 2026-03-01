@@ -403,19 +403,12 @@ function showCardPreview(n) {
   const modal = document.getElementById("card-modal");
   const numPad = String(n).padStart(3, '0');
   
-  // Try multiple image sources
-  const imgSources = [
-    `https://assets.tcgdex.net/fr/me/asc/${n}/high.webp`,
-    `https://assets.tcgdex.net/en/me/asc/${n}/high.webp`,
-    `https://images.pokemontcg.io/asc/${n}_hires.png`,
-  ];
-  
   modal.style.display = "block";
   modal.innerHTML = `
     <div class="modal-overlay" id="modal-overlay">
       <div class="modal-box">
         <button class="modal-close" id="modal-close">✕</button>
-        <div class="modal-loading">⏳ Chargement...</div>
+        <div class="modal-loading" id="modal-loading">⏳ Chargement...</div>
         <div class="modal-info">${numPad} — ${card.name}</div>
       </div>
     </div>`;
@@ -425,40 +418,63 @@ function showCardPreview(n) {
     if (e.target.id === "modal-overlay") closeModal();
   };
   
-  // Try loading images in sequence
-  tryLoadImage(imgSources, 0, card, numPad, modal);
+  // Use TCGdex API to get the correct image URL
+  fetch(`https://api.tcgdex.net/v2/fr/sets/asc/${n}`)
+    .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+    .then(data => {
+      if (data.image) {
+        insertImage(data.image + "/high.webp", card, numPad, modal);
+      } else { throw new Error('no image'); }
+    })
+    .catch(() => {
+      // Fallback: try English TCGdex
+      fetch(`https://api.tcgdex.net/v2/en/sets/asc/${n}`)
+        .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+        .then(data => {
+          if (data.image) {
+            insertImage(data.image + "/high.webp", card, numPad, modal);
+          } else { throw new Error('no image'); }
+        })
+        .catch(() => {
+          // Fallback: try pokemontcg.io
+          fetch(`https://api.pokemontcg.io/v2/cards/asc-${n}`)
+            .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+            .then(data => {
+              const imgUrl = data?.data?.images?.large || data?.data?.images?.small;
+              if (imgUrl) {
+                insertImage(imgUrl, card, numPad, modal);
+              } else { throw new Error('no image'); }
+            })
+            .catch(() => showFallbackLink(modal));
+        });
+    });
 }
 
-function tryLoadImage(sources, idx, card, numPad, modal) {
-  if (idx >= sources.length) {
-    // All failed — show fallback link
-    const box = modal.querySelector(".modal-box");
-    if (box) {
-      const loadingEl = box.querySelector(".modal-loading");
-      if (loadingEl) loadingEl.innerHTML = `
-        <div class="modal-error">
-          Image non disponible<br><br>
-          <a href="https://www.pokecardex.com/series/ASC" target="_blank">Voir sur Pokécardex →</a>
-        </div>`;
-    }
-    return;
-  }
-  
+function insertImage(url, card, numPad, modal) {
+  const loadingEl = modal.querySelector("#modal-loading");
   const img = new Image();
   img.onload = () => {
+    if (loadingEl) loadingEl.remove();
     const box = modal.querySelector(".modal-box");
     if (box) {
-      const loadingEl = box.querySelector(".modal-loading");
-      if (loadingEl) loadingEl.remove();
       const imgEl = document.createElement("img");
-      imgEl.src = sources[idx];
+      imgEl.src = url;
       imgEl.className = "modal-img";
       imgEl.alt = card.name;
       box.insertBefore(imgEl, box.querySelector(".modal-info"));
     }
   };
-  img.onerror = () => tryLoadImage(sources, idx + 1, card, numPad, modal);
-  img.src = sources[idx];
+  img.onerror = () => showFallbackLink(modal);
+  img.src = url;
+}
+
+function showFallbackLink(modal) {
+  const loadingEl = modal.querySelector("#modal-loading");
+  if (loadingEl) loadingEl.innerHTML = `
+    <div class="modal-error">
+      Image non disponible<br><br>
+      <a href="https://www.pokecardex.com/series/ASC" target="_blank">Voir sur Pokécardex →</a>
+    </div>`;
 }
 
 function closeModal() {

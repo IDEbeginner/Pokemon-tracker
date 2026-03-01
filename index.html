@@ -43,9 +43,51 @@ button{cursor:pointer}
 .header-title h1{font-size:20px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .header-sub{font-size:12px;color:var(–text3);margin-left:38px;margin-top:2px}
 .user-info{display:flex;align-items:center;gap:8px}
-.user-email{font-size:11px;color:var(–text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.logout-btn{font-size:11px;color:var(–red);background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);padding:4px 10px;border-radius:6px;font-weight:600}
-.logout-btn:hover{background:rgba(248,113,113,0.2)}
+.profile-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer}
+.profile-btn:hover{transform:scale(1.08);border-color:rgba(255,255,255,0.3)}
+.profile-menu{position:absolute;top:60px;right:20px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:14px;width:260px;z-index:150;box-shadow:0 16px 48px rgba(0,0,0,0.6);overflow:hidden;animation:menuSlide .2s}
+@keyframes menuSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.pm-header{padding:16px;border-bottom:1px solid var(–border)}
+.pm-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.pm-name{font-size:14px;font-weight:700;color:var(–text);margin-bottom:2px}
+.pm-email{font-size:11px;color:var(–text3);word-break:break-all}
+.pm-item{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:13px;font-weight:600;color:var(–text2);cursor:pointer;transition:background .15s;border:none;background:none;width:100%;text-align:left;font-family:‘Outfit’,sans-serif}
+.pm-item:hover{background:rgba(255,255,255,0.05)}
+.pm-item .pm-icon{font-size:16px;width:20px;text-align:center}
+.pm-item.danger{color:var(–red)}
+.pm-item.danger:hover{background:rgba(248,113,113,0.08)}
+.pm-sep{height:1px;background:var(–border);margin:0}
+.pm-overlay{position:fixed;inset:0;z-index:140}
+/* Account page */
+.account-page{max-width:500px;margin:0 auto;padding:20px}
+.account-back{display:flex;align-items:center;gap:6px;color:var(–text3);font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;margin-bottom:20px;font-family:‘Outfit’,sans-serif;padding:6px 0}
+.account-back:hover{color:var(–text)}
+.account-section{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:20px;margin-bottom:16px}
+.account-section h3{font-size:15px;font-weight:700;color:var(–text);margin-bottom:14px}
+.account-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.account-row:last-child{margin-bottom:0}
+.account-label{font-size:12px;color:var(–text3);font-weight:600;margin-bottom:4px}
+.account-value{font-size:14px;color:var(–text);font-weight:500}
+.account-input{width:100%;padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:13px;outline:none;margin-bottom:8px;font-family:‘Outfit’,sans-serif;-webkit-text-fill-color:#fff}
+.account-input::placeholder{color:#64748b;-webkit-text-fill-color:#64748b}
+.account-input:focus{border-color:var(–blue)}
+.account-save{padding:8px 20px;border-radius:8px;border:none;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;transition:all .2s;font-family:‘Outfit’,sans-serif}
+.account-save:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.account-save:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.account-msg{font-size:12px;margin-top:8px;min-height:16px}
+.account-msg.success{color:var(–green)}
+.account-msg.error{color:var(–red)}
+/* Collection picker */
+.collection-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.collection-card{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.collection-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.15)}
+.collection-card.active{border-color:var(–blue);background:rgba(59,130,246,0.06)}
+.collection-card .cc-icon{font-size:28px}
+.collection-card .cc-info{flex:1}
+.collection-card .cc-name{font-size:14px;font-weight:700;color:var(–text);margin-bottom:2px}
+.collection-card .cc-sub{font-size:11px;color:var(–text3)}
+.collection-card .cc-badge{font-size:11px;font-weight:700;color:var(–green);background:rgba(74,222,128,0.1);padding:3px 8px;border-radius:6px}
+.collection-card .cc-badge.soon{color:var(–text4);background:rgba(255,255,255,0.04)}
 
 /* Progress */
 .progress-section{max-width:800px;margin:0 auto;padding:16px 20px 8px}
@@ -126,7 +168,7 @@ button{cursor:pointer}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -177,6 +219,8 @@ let filterStatus = "missing";
 let filterRarity = "all";
 let searchText = "";
 let saveTimeout = null;
+let currentView = "tracker"; // "tracker" | "account" | "collections"
+let menuOpen = false;
 
 // ==================== AUTH ====================
 function renderAuth() {
@@ -263,7 +307,16 @@ function debouncedSave() {
 }
 
 // ==================== RENDER APP ====================
+function getInitials(user) {
+  if (user.displayName) return user.displayName.substring(0,2).toUpperCase();
+  if (user.email) return user.email.substring(0,2).toUpperCase();
+  return "?";
+}
+
 function renderApp() {
+  if (currentView === "account") { renderAccountPage(); return; }
+  if (currentView === "collections") { renderCollectionsPage(); return; }
+  
   const totalCards = CARDS.length;
   const haveCount = owned.size;
   const missingCount = totalCards - haveCount;
@@ -293,17 +346,30 @@ function renderApp() {
   const gradientFill = pct === 100 ? "linear-gradient(90deg,#4ade80,#22d3ee)" : "linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899)";
 
   document.getElementById("app-screen").innerHTML = `
-    <div class="header">
+    <div class="header" style="position:relative">
       <div class="header-top">
         <div>
           <div class="header-title"><span style="font-size:24px">🎴</span><h1>PokéTracker</h1></div>
           <div class="header-sub">ME2.5 — Héros Transcendants • ${totalCards} cartes</div>
         </div>
         <div class="user-info">
-          <span class="user-email">${currentUser.email || ""}</span>
-          <button class="logout-btn" id="logout-btn">Déco</button>
+          <button class="profile-btn" id="profile-btn">${getInitials(currentUser)}</button>
         </div>
       </div>
+      ${menuOpen ? `
+        <div class="pm-overlay" id="pm-overlay"></div>
+        <div class="profile-menu" id="profile-menu">
+          <div class="pm-header">
+            <div class="pm-avatar">${getInitials(currentUser)}</div>
+            <div class="pm-name">${currentUser.displayName || "Dresseur"}</div>
+            <div class="pm-email">${currentUser.email || ""}</div>
+          </div>
+          <button class="pm-item" id="pm-account"><span class="pm-icon">👤</span>Mon compte</button>
+          <button class="pm-item" id="pm-collections"><span class="pm-icon">📦</span>Collections</button>
+          <div class="pm-sep"></div>
+          <button class="pm-item danger" id="pm-logout"><span class="pm-icon">🚪</span>Se déconnecter</button>
+        </div>
+      ` : ''}
     </div>
 
     <div class="progress-section">
@@ -357,8 +423,14 @@ function renderApp() {
       }
     </div>`;
 
-  // Event listeners
-  document.getElementById("logout-btn").onclick = () => signOut(auth);
+  // Profile menu
+  document.getElementById("profile-btn").onclick = () => { menuOpen = !menuOpen; renderApp(); };
+  if (menuOpen) {
+    document.getElementById("pm-overlay").onclick = () => { menuOpen = false; renderApp(); };
+    document.getElementById("pm-account").onclick = () => { menuOpen = false; currentView = "account"; renderApp(); };
+    document.getElementById("pm-collections").onclick = () => { menuOpen = false; currentView = "collections"; renderApp(); };
+    document.getElementById("pm-logout").onclick = () => { menuOpen = false; signOut(auth); };
+  }
   
   document.getElementById("search-input").oninput = (e) => {
     searchText = e.target.value;
@@ -394,6 +466,158 @@ function renderApp() {
       showCardPreview(n);
     };
   });
+}
+
+// ==================== ACCOUNT PAGE ====================
+function renderAccountPage() {
+  const displayName = currentUser.displayName || "";
+  const email = currentUser.email || "";
+  const isGoogle = currentUser.providerData?.[0]?.providerId === "google.com";
+  
+  document.getElementById("app-screen").innerHTML = `
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="header-title"><span style="font-size:24px">🎴</span><h1>PokéTracker</h1></div>
+          <div class="header-sub">Mon compte</div>
+        </div>
+      </div>
+    </div>
+    <div class="account-page">
+      <button class="account-back" id="back-btn">← Retour au tracker</button>
+      
+      <div class="account-section">
+        <h3>👤 Profil</h3>
+        <div class="account-label">Pseudo</div>
+        <input class="account-input" id="input-name" type="text" placeholder="Mon pseudo" value="${displayName}">
+        <button class="account-save" id="save-name">Enregistrer</button>
+        <div class="account-msg" id="msg-name"></div>
+      </div>
+
+      <div class="account-section">
+        <h3>📧 Email</h3>
+        <div class="account-label">Adresse email</div>
+        <div class="account-value">${email}</div>
+        ${isGoogle ? '<div style="font-size:11px;color:var(--text4);margin-top:6px">Connecté via Google</div>' : ''}
+      </div>
+
+      ${!isGoogle ? `
+      <div class="account-section">
+        <h3>🔒 Mot de passe</h3>
+        <div class="account-label">Mot de passe actuel</div>
+        <input class="account-input" id="input-old-pass" type="password" placeholder="Mot de passe actuel">
+        <div class="account-label">Nouveau mot de passe</div>
+        <input class="account-input" id="input-new-pass" type="password" placeholder="Nouveau mot de passe (6 car. min)">
+        <button class="account-save" id="save-pass">Changer le mot de passe</button>
+        <div class="account-msg" id="msg-pass"></div>
+      </div>
+      ` : ''}
+
+      <div class="account-section" style="border-color:rgba(248,113,113,0.15)">
+        <h3>⚠️ Zone dangereuse</h3>
+        <button class="pm-item danger" id="btn-logout-account" style="padding:8px 0">🚪 Se déconnecter</button>
+      </div>
+    </div>`;
+
+  document.getElementById("back-btn").onclick = () => { currentView = "tracker"; renderApp(); };
+  document.getElementById("btn-logout-account").onclick = () => signOut(auth);
+
+  // Save pseudo
+  document.getElementById("save-name").onclick = async () => {
+    const name = document.getElementById("input-name").value.trim();
+    const msg = document.getElementById("msg-name");
+    if (!name) { msg.className = "account-msg error"; msg.textContent = "Le pseudo ne peut pas être vide"; return; }
+    try {
+      await updateProfile(currentUser, { displayName: name });
+      msg.className = "account-msg success"; msg.textContent = "✓ Pseudo mis à jour !";
+      setTimeout(() => { msg.textContent = ""; }, 2000);
+    } catch(e) {
+      msg.className = "account-msg error"; msg.textContent = e.message;
+    }
+  };
+
+  // Change password
+  if (!isGoogle) {
+    document.getElementById("save-pass").onclick = async () => {
+      const oldPass = document.getElementById("input-old-pass").value;
+      const newPass = document.getElementById("input-new-pass").value;
+      const msg = document.getElementById("msg-pass");
+      if (!oldPass || !newPass) { msg.className = "account-msg error"; msg.textContent = "Remplis les deux champs"; return; }
+      if (newPass.length < 6) { msg.className = "account-msg error"; msg.textContent = "6 caractères minimum"; return; }
+      try {
+        const credential = EmailAuthProvider.credential(currentUser.email, oldPass);
+        await reauthenticateWithCredential(currentUser, credential);
+        await updatePassword(currentUser, newPass);
+        msg.className = "account-msg success"; msg.textContent = "✓ Mot de passe mis à jour !";
+        document.getElementById("input-old-pass").value = "";
+        document.getElementById("input-new-pass").value = "";
+        setTimeout(() => { msg.textContent = ""; }, 2000);
+      } catch(e) {
+        const msgs = {"auth/wrong-password":"Mot de passe actuel incorrect","auth/invalid-credential":"Mot de passe actuel incorrect","auth/too-many-requests":"Trop de tentatives"};
+        msg.className = "account-msg error"; msg.textContent = msgs[e.code] || e.message;
+      }
+    };
+  }
+}
+
+// ==================== COLLECTIONS PAGE ====================
+function renderCollectionsPage() {
+  const haveCount = owned.size;
+  const pct = Math.round((haveCount / CARDS.length) * 100);
+  
+  document.getElementById("app-screen").innerHTML = `
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="header-title"><span style="font-size:24px">🎴</span><h1>PokéTracker</h1></div>
+          <div class="header-sub">Mes collections</div>
+        </div>
+      </div>
+    </div>
+    <div class="account-page">
+      <button class="account-back" id="back-btn">← Retour au tracker</button>
+      
+      <div class="collection-grid">
+        <div class="collection-card active" id="col-me25">
+          <span class="cc-icon">🎴</span>
+          <div class="cc-info">
+            <div class="cc-name">ME2.5 — Héros Transcendants</div>
+            <div class="cc-sub">295 cartes • ${haveCount} possédées (${pct}%)</div>
+          </div>
+          <span class="cc-badge">Actif</span>
+        </div>
+        
+        <div class="collection-card" style="opacity:0.5;cursor:default">
+          <span class="cc-icon">⚡</span>
+          <div class="cc-info">
+            <div class="cc-name">ME2 — Méga-Évolution</div>
+            <div class="cc-sub">Bientôt disponible</div>
+          </div>
+          <span class="cc-badge soon">Bientôt</span>
+        </div>
+        
+        <div class="collection-card" style="opacity:0.5;cursor:default">
+          <span class="cc-icon">👻</span>
+          <div class="cc-info">
+            <div class="cc-name">ME1.5 — Flammes Fantasmagoriques</div>
+            <div class="cc-sub">Bientôt disponible</div>
+          </div>
+          <span class="cc-badge soon">Bientôt</span>
+        </div>
+
+        <div class="collection-card" style="opacity:0.5;cursor:default">
+          <span class="cc-icon">🌟</span>
+          <div class="cc-info">
+            <div class="cc-name">EV8.5 — Évolutions Prismatiques</div>
+            <div class="cc-sub">Bientôt disponible</div>
+          </div>
+          <span class="cc-badge soon">Bientôt</span>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById("back-btn").onclick = () => { currentView = "tracker"; renderApp(); };
+  document.getElementById("col-me25").onclick = () => { currentView = "tracker"; renderApp(); };
 }
 
 // ==================== CARD PREVIEW ====================

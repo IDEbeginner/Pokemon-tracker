@@ -93,6 +93,17 @@ button{cursor:pointer}
 .card-rarity{font-size:11px;font-weight:700;font-family:‘JetBrains Mono’,monospace;flex-shrink:0}
 .empty-state{text-align:center;padding:60px 20px;color:var(–text4);font-size:15px;font-weight:500}
 .empty-icon{font-size:36px;display:block;margin-bottom:10px}
+.eye-btn{width:28px;height:28px;border-radius:6px;border:none;background:rgba(255,255,255,0.06);color:var(–text3);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;padding:0}
+.eye-btn:hover{background:rgba(255,255,255,0.12);color:var(–text)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s}
+.modal-box{position:relative;max-width:360px;width:100%;text-align:center}
+.modal-close{position:absolute;top:-40px;right:0;background:rgba(255,255,255,0.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:201}
+.modal-close:hover{background:rgba(255,255,255,0.2)}
+.modal-img{width:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.modal-info{margin-top:12px;color:var(–text2);font-size:13px;font-weight:600}
+.modal-loading{color:var(–text3);font-size:14px;padding:40px}
+.modal-error{color:var(–text3);font-size:13px;padding:20px}
+.modal-error a{color:var(–blue);text-decoration:underline}
 
 /* Saving indicator */
 .saving{position:fixed;top:12px;right:12px;background:rgba(59,130,246,0.15);color:var(–blue);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(59,130,246,0.3);z-index:100;animation:fadeIn .2s}
@@ -111,6 +122,7 @@ button{cursor:pointer}
 <div id="auth-screen" style="display:none"></div>
 <div id="app-screen" style="display:none"></div>
 <div id="saving-indicator" style="display:none" class="saving">💾 Sauvegarde...</div>
+<div id="card-modal" style="display:none"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
@@ -339,6 +351,7 @@ function renderApp() {
             <span class="card-icon">${TYPE_META[c.type]?.icon || ''}</span>
             <span class="card-name">${c.name}</span>
             <span class="card-rarity" style="color:${RARITY_COLOR[c.rarity] || '#475569'}">${RARITY_SYM[c.rarity] || ''}</span>
+            <button class="eye-btn" data-preview="${c.n}" title="Aperçu">👁️</button>
           </div>`;
         }).join('')
       }
@@ -364,14 +377,100 @@ function renderApp() {
   });
 
   document.querySelectorAll(".card-row").forEach(row => {
-    row.onclick = () => {
+    row.onclick = (e) => {
+      if (e.target.closest('.eye-btn')) return; // don't toggle when clicking eye
       const n = parseInt(row.dataset.n);
       if (owned.has(n)) owned.delete(n); else owned.add(n);
       debouncedSave();
       renderApp();
     };
   });
+
+  // Eye preview buttons
+  document.querySelectorAll(".eye-btn").forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const n = parseInt(btn.dataset.preview);
+      showCardPreview(n);
+    };
+  });
 }
+
+// ==================== CARD PREVIEW ====================
+function showCardPreview(n) {
+  const card = CARDS.find(c => c.n === n);
+  if (!card) return;
+  const modal = document.getElementById("card-modal");
+  const numPad = String(n).padStart(3, '0');
+  
+  // Try multiple image sources
+  const imgSources = [
+    `https://assets.tcgdex.net/fr/me/asc/${n}/high.webp`,
+    `https://assets.tcgdex.net/en/me/asc/${n}/high.webp`,
+    `https://images.pokemontcg.io/asc/${n}_hires.png`,
+  ];
+  
+  modal.style.display = "block";
+  modal.innerHTML = `
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-box">
+        <button class="modal-close" id="modal-close">✕</button>
+        <div class="modal-loading">⏳ Chargement...</div>
+        <div class="modal-info">${numPad} — ${card.name}</div>
+      </div>
+    </div>`;
+  
+  document.getElementById("modal-close").onclick = closeModal;
+  document.getElementById("modal-overlay").onclick = (e) => {
+    if (e.target.id === "modal-overlay") closeModal();
+  };
+  
+  // Try loading images in sequence
+  tryLoadImage(imgSources, 0, card, numPad, modal);
+}
+
+function tryLoadImage(sources, idx, card, numPad, modal) {
+  if (idx >= sources.length) {
+    // All failed — show fallback link
+    const box = modal.querySelector(".modal-box");
+    if (box) {
+      const loadingEl = box.querySelector(".modal-loading");
+      if (loadingEl) loadingEl.innerHTML = `
+        <div class="modal-error">
+          Image non disponible<br><br>
+          <a href="https://www.pokecardex.com/series/ASC" target="_blank">Voir sur Pokécardex →</a>
+        </div>`;
+    }
+    return;
+  }
+  
+  const img = new Image();
+  img.onload = () => {
+    const box = modal.querySelector(".modal-box");
+    if (box) {
+      const loadingEl = box.querySelector(".modal-loading");
+      if (loadingEl) loadingEl.remove();
+      const imgEl = document.createElement("img");
+      imgEl.src = sources[idx];
+      imgEl.className = "modal-img";
+      imgEl.alt = card.name;
+      box.insertBefore(imgEl, box.querySelector(".modal-info"));
+    }
+  };
+  img.onerror = () => tryLoadImage(sources, idx + 1, card, numPad, modal);
+  img.src = sources[idx];
+}
+
+function closeModal() {
+  const modal = document.getElementById("card-modal");
+  modal.style.display = "none";
+  modal.innerHTML = "";
+}
+
+// Close modal on Escape
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
+});
 
 // ==================== AUTH STATE ====================
 onAuthStateChanged(auth, async (user) => {

@@ -20,8 +20,9 @@ button{cursor:pointer}
 .auth-box{background:var(–card);border:1px solid var(–border);border-radius:16px;padding:32px;width:100%;max-width:380px}
 .auth-box h1{font-size:24px;font-weight:800;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .auth-box .subtitle{text-align:center;color:var(–text2);font-size:13px;margin-bottom:24px}
-.auth-input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–text);font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s}
-.auth-input:focus{border-color:var(–blue)}
+.auth-input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#ffffff;font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s;-webkit-text-fill-color:#ffffff}
+.auth-input::placeholder{color:#94a3b8;-webkit-text-fill-color:#94a3b8}
+.auth-input:focus{border-color:var(–blue);background:rgba(255,255,255,0.1)}
 .auth-btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:700;transition:all .2s;margin-bottom:8px}
 .auth-btn.primary{background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff}
 .auth-btn.primary:hover{transform:translateY(-1px);filter:brightness(1.1)}

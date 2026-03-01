@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PokéTracker — Collection ME2.5 Héros Transcendants</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎴</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0f;--bg2:#12121f;--card:#161625;--border:rgba(255,255,255,0.06);--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;--text4:#334155;--green:#4ade80;--red:#f87171;--blue:#3b82f6;--purple:#8b5cf6;--pink:#ec4899;--gold:#ffd700;--sar-pink:#ff6eb4;--ma-orange:#ff4500;--ur-blue:#00bfff;--ir-purple:#da70d6}
+body{background:linear-gradient(145deg,var(--bg) 0%,var(--bg2) 40%,#0d1117 100%);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--text4);border-radius:3px}
+input,button{font-family:'Outfit',sans-serif}
+button{cursor:pointer}
+
+/* Auth Screen */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.auth-box{background:var(–card);border:1px solid var(–border);border-radius:16px;padding:32px;width:100%;max-width:380px}
+.auth-box h1{font-size:24px;font-weight:800;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-box .subtitle{text-align:center;color:var(–text2);font-size:13px;margin-bottom:24px}
+.auth-input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–text);font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s}
+.auth-input:focus{border-color:var(–blue)}
+.auth-btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:700;transition:all .2s;margin-bottom:8px}
+.auth-btn.primary{background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff}
+.auth-btn.primary:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.auth-btn.google{background:rgba(255,255,255,0.06);color:var(–text);border:1px solid var(–border)}
+.auth-btn.google:hover{background:rgba(255,255,255,0.1)}
+.auth-toggle{text-align:center;margin-top:16px;font-size:13px;color:var(–text3)}
+.auth-toggle span{color:var(–blue);cursor:pointer;font-weight:600}
+.auth-toggle span:hover{text-decoration:underline}
+.auth-error{color:var(–red);font-size:12px;text-align:center;margin-bottom:10px;min-height:16px}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(–text3);font-size:12px}
+.auth-divider::before,.auth-divider::after{content:’’;flex:1;height:1px;background:var(–border)}
+
+/* App */
+#app-screen{display:none}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border-bottom:1px solid var(–border);padding:16px 20px 16px}
+.header-top{display:flex;align-items:center;justify-content:space-between;max-width:800px;margin:0 auto}
+.header-title{display:flex;align-items:center;gap:10px}
+.header-title h1{font-size:20px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-sub{font-size:12px;color:var(–text3);margin-left:38px;margin-top:2px}
+.user-info{display:flex;align-items:center;gap:8px}
+.user-email{font-size:11px;color:var(–text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logout-btn{font-size:11px;color:var(–red);background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);padding:4px 10px;border-radius:6px;font-weight:600}
+.logout-btn:hover{background:rgba(248,113,113,0.2)}
+
+/* Progress */
+.progress-section{max-width:800px;margin:0 auto;padding:16px 20px 8px}
+.progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.progress-pct{font-size:32px;font-weight:900;font-family:‘JetBrains Mono’,monospace;color:#f1f5f9}
+.progress-count{font-size:13px;color:var(–text2);font-family:‘JetBrains Mono’,monospace}
+.progress-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.type-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;max-width:800px;margin-left:auto;margin-right:auto;padding:0 20px}
+.type-chip{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:16px;font-size:11px;font-weight:600;border:1px solid transparent;transition:all .15s;cursor:pointer;background:rgba(255,255,255,0.04);color:var(–text3)}
+.type-chip:hover{transform:scale(1.05);filter:brightness(1.2)}
+.type-chip.active{background:rgba(255,255,255,0.08)}
+.type-chip .chip-count{font-family:‘JetBrains Mono’,monospace;font-size:10px}
+
+/* Controls */
+.controls{max-width:800px;margin:0 auto;padding:12px 20px}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–text3);transition:all .2s}
+.filter-btn:hover{transform:translateY(-1px)}
+.filter-btn.active{border-color:currentColor}
+.search-input{width:100%;padding:10px 16px;border-radius:10px;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–text);font-size:14px;outline:none;margin-bottom:8px}
+.search-input:focus{border-color:rgba(255,255,255,0.15)}
+.rarity-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.rarity-btn{padding:3px 9px;border-radius:14px;font-size:11px;font-weight:600;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–text3);transition:all .15s}
+.rarity-btn.active{border-color:currentColor}
+.results-info{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(–text3);margin-bottom:4px}
+
+/* Card list */
+.card-list{max-width:800px;margin:0 auto;padding:0 20px 100px}
+.card-row{display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:3px;border-radius:10px;cursor:pointer;transition:all .15s;user-select:none;border:1px solid transparent}
+.card-row:hover{transform:translateX(4px)}
+.card-row:active{transform:scale(.99)}
+.card-row.owned{background:rgba(74,222,128,0.04);border-color:rgba(74,222,128,0.1)}
+.card-row.missing{background:rgba(248,113,113,0.03);border-color:rgba(248,113,113,0.06)}
+.card-row.secret{border-color:rgba(218,112,214,0.1)}
+.card-row.secret.sar{border-color:rgba(255,110,180,0.12)}
+.card-row.secret.gold{border-color:rgba(255,215,0,0.15);background:rgba(255,215,0,0.04)}
+.card-row.secret.ma{border-color:rgba(255,69,0,0.12)}
+.check{width:20px;height:20px;border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:2px solid var(–text4);transition:all .15s;font-size:12px;font-weight:900;color:var(–bg)}
+.check.checked{background:var(–green);border:none}
+.card-num{font-family:‘JetBrains Mono’,monospace;font-size:11px;font-weight:600;color:var(–text3);width:30px;flex-shrink:0;text-align:right}
+.card-icon{font-size:13px;flex-shrink:0}
+.card-name{flex:1;font-size:13px;font-weight:500;color:var(–text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-row.owned .card-name{color:var(–text3);font-weight:400;text-decoration:line-through;text-decoration-color:var(–text4)}
+.card-rarity{font-size:11px;font-weight:700;font-family:‘JetBrains Mono’,monospace;flex-shrink:0}
+.empty-state{text-align:center;padding:60px 20px;color:var(–text4);font-size:15px;font-weight:500}
+.empty-icon{font-size:36px;display:block;margin-bottom:10px}
+
+/* Saving indicator */
+.saving{position:fixed;top:12px;right:12px;background:rgba(59,130,246,0.15);color:var(–blue);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(59,130,246,0.3);z-index:100;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:16px;color:var(–text2)}
+.spinner{width:24px;height:24px;border:3px solid var(–text4);border-top-color:var(–blue);border-radius:50%;animation:spin .6s linear infinite;margin-right:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
+</head>
+<body>
+
+<div id="loading-screen" class="loading"><div class="spinner"></div>Chargement...</div>
+<div id="auth-screen" style="display:none"></div>
+<div id="app-screen" style="display:none"></div>
+<div id="saving-indicator" style="display:none" class="saving">💾 Sauvegarde...</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAXXeY_u-uMlGaLo3PV9zPrTDOn24aOsDA",
+  authDomain: "pokemon-tracker-d840e.firebaseapp.com",
+  projectId: "pokemon-tracker-d840e",
+  storageBucket: "pokemon-tracker-d840e.firebasestorage.app",
+  messagingSenderId: "957454173850",
+  appId: "1:957454173850:web:a58edad2d125dfc5de4123"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+// ==================== CARD DATA ====================
+const CARDS = [
+  {n:1,name:"Mystherbe d'Erika",type:"grass",rarity:"C"},{n:2,name:"Ortide d'Erika",type:"grass",rarity:"U"},{n:3,name:"Rafflesia ex d'Erika",type:"grass",rarity:"RR"},{n:4,name:"Chétiflor d'Erika",type:"grass",rarity:"C"},{n:5,name:"Boustiflor d'Erika",type:"grass",rarity:"U"},{n:6,name:"Empiflor d'Erika",type:"grass",rarity:"U"},{n:7,name:"Saquedeneu d'Erika",type:"grass",rarity:"C"},{n:8,name:"Germignon",type:"grass",rarity:"C"},{n:9,name:"Macronium",type:"grass",rarity:"U"},{n:10,name:"Méga-Méganium ex",type:"grass",rarity:"RR"},{n:11,name:"Chenipotte",type:"grass",rarity:"C"},{n:12,name:"Armulys",type:"grass",rarity:"U"},{n:13,name:"Charmillon",type:"grass",rarity:"U"},{n:14,name:"Blindalys",type:"grass",rarity:"U"},{n:15,name:"Papinox",type:"grass",rarity:"U"},{n:16,name:"Rozbouton",type:"grass",rarity:"C"},{n:17,name:"Larvibule",type:"grass",rarity:"C"},{n:18,name:"Tissenboule de la TR",type:"grass",rarity:"C"},{n:19,name:"Filentrappe de la TR",type:"grass",rarity:"U"},
+  {n:20,name:"Salamèche",type:"fire",rarity:"C"},{n:21,name:"Reptincel",type:"fire",rarity:"U"},{n:22,name:"Méga-Dracaufeu Y ex",type:"fire",rarity:"RR"},{n:23,name:"Limagma de Luth",type:"fire",rarity:"C"},{n:24,name:"Volcaropod de Luth",type:"fire",rarity:"U"},{n:25,name:"Entei",type:"fire",rarity:"R"},{n:26,name:"Ho-Oh ex de Luth",type:"fire",rarity:"RR"},{n:27,name:"Chamallot",type:"fire",rarity:"C"},{n:28,name:"Camérupt",type:"fire",rarity:"U"},{n:29,name:"Gruikui",type:"fire",rarity:"C"},{n:30,name:"Grotichon",type:"fire",rarity:"U"},{n:31,name:"Méga-Roitiflam ex",type:"fire",rarity:"RR"},{n:32,name:"Darumarond de N",type:"fire",rarity:"C"},{n:33,name:"Darumacho de N",type:"fire",rarity:"U"},{n:34,name:"Tritox",type:"fire",rarity:"C"},{n:35,name:"Malamandre",type:"fire",rarity:"U"},{n:36,name:"Flambino",type:"fire",rarity:"C"},{n:37,name:"Lapyro",type:"fire",rarity:"U"},{n:38,name:"Pyrobut ex",type:"fire",rarity:"RR"},
+  {n:39,name:"Psykokwak",type:"water",rarity:"C"},{n:40,name:"Akwakwak",type:"water",rarity:"U"},{n:41,name:"Kaiminus",type:"water",rarity:"C"},{n:42,name:"Crocrodil",type:"water",rarity:"U"},{n:43,name:"Méga-Aligatueur ex",type:"water",rarity:"RR"},{n:44,name:"Farfuret",type:"water",rarity:"C"},{n:45,name:"Dimoret",type:"water",rarity:"U"},{n:46,name:"Stalgamin",type:"water",rarity:"C"},{n:47,name:"Méga-Momartik ex",type:"water",rarity:"RR"},{n:48,name:"Regice ex",type:"water",rarity:"RR"},{n:49,name:"Sorboul de N",type:"water",rarity:"C"},{n:50,name:"Sorbouboule de N",type:"water",rarity:"U"},{n:51,name:"Sorbouboul de N",type:"water",rarity:"U"},{n:52,name:"Frissonille",type:"water",rarity:"C"},{n:53,name:"Blizzeval",type:"water",rarity:"U"},{n:54,name:"Glastrier",type:"water",rarity:"R"},
+  {n:55,name:"Pikachu",type:"electric",rarity:"C"},{n:56,name:"Raichu",type:"electric",rarity:"U"},{n:57,name:"Pikachu ex",type:"electric",rarity:"RR"},{n:58,name:"Voltorbe ex",type:"electric",rarity:"RR"},{n:59,name:"Galvaran",type:"electric",rarity:"C"},{n:60,name:"Lampéroie",type:"electric",rarity:"U"},{n:61,name:"Méga-Ohmassacre ex",type:"electric",rarity:"RR"},{n:62,name:"Limonde",type:"electric",rarity:"C"},{n:63,name:"Hélionceau",type:"electric",rarity:"C"},{n:64,name:"Iguolta",type:"electric",rarity:"U"},{n:65,name:"Chrysapile",type:"electric",rarity:"C"},{n:66,name:"Lucanon",type:"electric",rarity:"U"},{n:67,name:"Tokorico",type:"electric",rarity:"R"},{n:68,name:"Wattapik ex de Nabil",type:"electric",rarity:"RR"},{n:69,name:"Têtampoule de Donna",type:"electric",rarity:"C"},{n:70,name:"Ampibidou ex de Donna",type:"electric",rarity:"RR"},{n:71,name:"Frégatane de Donna",type:"electric",rarity:"C"},{n:72,name:"Fulgulairo de Donna",type:"electric",rarity:"U"},{n:73,name:"Miraidon ex",type:"electric",rarity:"RR"},
+  {n:74,name:"Mélofée",type:"psychic",rarity:"C"},{n:75,name:"Mélodelfe",type:"psychic",rarity:"U"},{n:76,name:"Mélofée ex de Lilie",type:"psychic",rarity:"RR"},{n:77,name:"Noeunoeuf de la TR",type:"psychic",rarity:"C"},{n:78,name:"Noadkoko de la TR",type:"psychic",rarity:"U"},{n:79,name:"Mewtwo ex de la TR",type:"psychic",rarity:"RR"},{n:80,name:"Togepi",type:"psychic",rarity:"C"},{n:81,name:"Togetic",type:"psychic",rarity:"U"},{n:82,name:"Togekiss",type:"psychic",rarity:"R"},{n:83,name:"Marill",type:"psychic",rarity:"C"},{n:84,name:"Azumarill ex",type:"psychic",rarity:"RR"},{n:85,name:"Feuforêve",type:"psychic",rarity:"C"},{n:86,name:"Magirêve",type:"psychic",rarity:"U"},{n:87,name:"Tarsal",type:"psychic",rarity:"C"},{n:88,name:"Kirlia",type:"psychic",rarity:"U"},{n:89,name:"Méga-Gardevoir ex",type:"psychic",rarity:"RR"},{n:90,name:"Polichombr",type:"psychic",rarity:"C"},{n:91,name:"Branette",type:"psychic",rarity:"U"},{n:92,name:"Motisma",type:"psychic",rarity:"R"},{n:93,name:"Sucroquin",type:"psychic",rarity:"C"},{n:94,name:"Cupcanaille",type:"psychic",rarity:"U"},{n:95,name:"Brocélôme de Nabil",type:"psychic",rarity:"C"},{n:96,name:"Desséliande de Nabil",type:"psychic",rarity:"U"},{n:97,name:"Mimiqui de la TR",type:"psychic",rarity:"C"},{n:98,name:"Spectreval",type:"psychic",rarity:"R"},{n:99,name:"Munkidori",type:"psychic",rarity:"R"},
+  {n:100,name:"Taupiqueur de la TR",type:"fighting",rarity:"C"},{n:101,name:"Triopikeur de la TR",type:"fighting",rarity:"U"},{n:102,name:"Kapoera",type:"fighting",rarity:"R"},{n:103,name:"Méditikka",type:"fighting",rarity:"C"},{n:104,name:"Charmina",type:"fighting",rarity:"U"},{n:105,name:"Séléroc",type:"fighting",rarity:"C"},{n:106,name:"Solaroc",type:"fighting",rarity:"C"},{n:107,name:"Regirock ex",type:"fighting",rarity:"RR"},{n:108,name:"Groudon",type:"fighting",rarity:"R"},{n:109,name:"Griknot de Cynthia",type:"fighting",rarity:"C"},{n:110,name:"Carmache de Cynthia",type:"fighting",rarity:"U"},{n:111,name:"Carchacrok ex de Cynthia",type:"fighting",rarity:"RR"},{n:112,name:"Riolu",type:"fighting",rarity:"C"},{n:113,name:"Méga-Lucario ex",type:"fighting",rarity:"RR"},{n:114,name:"Limonde ex",type:"fighting",rarity:"RR"},{n:115,name:"Pandespiègle",type:"fighting",rarity:"C"},{n:116,name:"Méga-Brutalibré ex",type:"fighting",rarity:"RR"},{n:117,name:"Strassie",type:"fighting",rarity:"C"},{n:118,name:"Charbi",type:"fighting",rarity:"C"},{n:119,name:"Wagomine",type:"fighting",rarity:"U"},{n:120,name:"Monthracite",type:"fighting",rarity:"R"},{n:121,name:"Koraidon ex",type:"fighting",rarity:"RR"},{n:122,name:"Okidogi",type:"fighting",rarity:"R"},
+  {n:123,name:"Fantominus",type:"darkness",rarity:"C"},{n:124,name:"Spectrum",type:"darkness",rarity:"U"},{n:125,name:"Méga-Ectoplasma ex",type:"darkness",rarity:"RR"},{n:126,name:"Cornèbre de la TR",type:"darkness",rarity:"C"},{n:127,name:"Corboss de la TR",type:"darkness",rarity:"U"},{n:128,name:"Medhyèna",type:"darkness",rarity:"C"},{n:129,name:"Grahyèna",type:"darkness",rarity:"U"},{n:130,name:"Zigzaton de Galar",type:"darkness",rarity:"C"},{n:131,name:"Linéon de Galar",type:"darkness",rarity:"U"},{n:132,name:"Ixon de Galar",type:"darkness",rarity:"R"},{n:133,name:"Spiritomb de Cynthia",type:"darkness",rarity:"C"},{n:134,name:"Baggiguane",type:"darkness",rarity:"C"},{n:135,name:"Méga-Baggaïd ex",type:"darkness",rarity:"RR"},{n:136,name:"Zorua de N",type:"darkness",rarity:"C"},{n:137,name:"Zoroark ex de N",type:"darkness",rarity:"RR"},{n:138,name:"Vostourno",type:"darkness",rarity:"C"},{n:139,name:"Vaututrice ex",type:"darkness",rarity:"RR"},{n:140,name:"Pandarbare",type:"darkness",rarity:"U"},{n:141,name:"Hoopa",type:"darkness",rarity:"R"},{n:142,name:"Fézandipiti ex",type:"darkness",rarity:"RR"},{n:143,name:"Pêchaminus",type:"darkness",rarity:"R"},
+  {n:144,name:"Mystibule",type:"steel",rarity:"C"},{n:145,name:"Registeel ex",type:"steel",rarity:"RR"},{n:146,name:"Scalpion",type:"steel",rarity:"C"},{n:147,name:"Scalproie",type:"steel",rarity:"U"},{n:148,name:"Scalpereur",type:"steel",rarity:"R"},{n:149,name:"Togedemaru ex",type:"steel",rarity:"RR"},
+  {n:150,name:"Minidraco",type:"dragon",rarity:"C"},{n:151,name:"Draco",type:"dragon",rarity:"U"},{n:152,name:"Méga-Dracolosse ex",type:"dragon",rarity:"RR"},{n:153,name:"Rayquaza",type:"dragon",rarity:"R"},{n:154,name:"Reshiram de N",type:"dragon",rarity:"R"},{n:155,name:"Zekrom de N",type:"dragon",rarity:"R"},{n:156,name:"Sonistrelle",type:"dragon",rarity:"C"},{n:157,name:"Bruyverne",type:"dragon",rarity:"U"},{n:158,name:"Fantyrm",type:"dragon",rarity:"C"},{n:159,name:"Dispareptil",type:"dragon",rarity:"U"},{n:160,name:"Lanssorien ex",type:"dragon",rarity:"RR"},
+  {n:161,name:"Miaouss de la TR",type:"colorless",rarity:"C"},{n:162,name:"Kangourex ex de la TR",type:"colorless",rarity:"RR"},{n:163,name:"Insolourdo de Tonio",type:"colorless",rarity:"C"},{n:164,name:"Deusolourdo ex de Tonio",type:"colorless",rarity:"RR"},{n:165,name:"Skitty",type:"colorless",rarity:"C"},{n:166,name:"Delcatty",type:"colorless",rarity:"U"},{n:167,name:"Mangriff ex",type:"colorless",rarity:"RR"},{n:168,name:"Étourmi de Tonio",type:"colorless",rarity:"C"},{n:169,name:"Étourvol de Tonio",type:"colorless",rarity:"U"},{n:170,name:"Étouraptor de Tonio",type:"colorless",rarity:"R"},{n:171,name:"Motisma Hélice",type:"colorless",rarity:"C"},{n:172,name:"Méga-Nanméouïe ex",type:"colorless",rarity:"RR"},{n:173,name:"Furaiglon de Tonio",type:"colorless",rarity:"C"},{n:174,name:"Gueriaigle de Tonio",type:"colorless",rarity:"U"},{n:175,name:"Dodoala de Tonio",type:"colorless",rarity:"C"},{n:176,name:"Draïeul",type:"colorless",rarity:"R"},{n:177,name:"Nigosier de Nabil",type:"colorless",rarity:"C"},{n:178,name:"Terapagos",type:"colorless",rarity:"R"},{n:179,name:"Terapagos ex",type:"colorless",rarity:"RR"},
+  {n:180,name:"Espièglerie de Margie",type:"trainer",rarity:"U"},{n:181,name:"Ballon Volant",type:"trainer",rarity:"U"},{n:182,name:"Anthéa & Concordia",type:"trainer",rarity:"U"},{n:183,name:"Ordres du Boss",type:"trainer",rarity:"U"},{n:184,name:"Pofin Copain-Copain",type:"trainer",rarity:"C"},{n:185,name:"Canari",type:"trainer",rarity:"C"},{n:186,name:"Rattrape-Riposte",type:"trainer",rarity:"U"},{n:187,name:"Gong de Combat",type:"trainer",rarity:"U"},{n:188,name:"Forêt de Vitalité",type:"trainer",rarity:"U"},{n:189,name:"Trompette en Verre",type:"trainer",rarity:"U"},{n:190,name:"Esprit Combatif d'Iris",type:"trainer",rarity:"U"},{n:191,name:"Balle Lumière",type:"trainer",rarity:"U"},{n:192,name:"Volonté de Lilie",type:"trainer",rarity:"U"},{n:193,name:"Méga Signal",type:"trainer",rarity:"U"},{n:194,name:"Jardin Mystère",type:"trainer",rarity:"U"},{n:195,name:"PP Plus de N",type:"trainer",rarity:"U"},{n:196,name:"Civière Nocturne",type:"trainer",rarity:"C"},{n:197,name:"Mine Nocturne",type:"trainer",rarity:"U"},{n:198,name:"Poké Pad",type:"trainer",rarity:"U"},{n:199,name:"Puissance Premium Pro",type:"trainer",rarity:"U"},{n:200,name:"Surfeur",type:"trainer",rarity:"C"},{n:201,name:"Archer de la TR",type:"trainer",rarity:"U"},{n:202,name:"Ariane de la TR",type:"trainer",rarity:"U"},{n:203,name:"Usine de la TR",type:"trainer",rarity:"U"},{n:204,name:"Giovanni de la TR",type:"trainer",rarity:"U"},{n:205,name:"Super Ball de la TR",type:"trainer",rarity:"U"},{n:206,name:"Hypnotiseur de la TR",type:"trainer",rarity:"U"},{n:207,name:"Petrel de la TR",type:"trainer",rarity:"U"},{n:208,name:"Proton de la TR",type:"trainer",rarity:"U"},{n:209,name:"Émetteur-Récepteur TR",type:"trainer",rarity:"U"},{n:210,name:"Tour de Guet de la TR",type:"trainer",rarity:"U"},{n:211,name:"Écaille Épaisse",type:"trainer",rarity:"U"},{n:212,name:"Démonte-Outil",type:"trainer",rarity:"C"},{n:213,name:"Hyper Ball",type:"trainer",rarity:"C"},{n:214,name:"Bingo",type:"trainer",rarity:"U"},{n:215,name:"Serveuse",type:"trainer",rarity:"C"},
+  {n:216,name:"Énergie Prisme",type:"energy",rarity:"U"},{n:217,name:"Énergie de la TR",type:"energy",rarity:"U"},
+  // SECRET RARES
+  {n:218,name:"Saquedeneu d'Erika ☆",type:"grass",rarity:"IR"},{n:219,name:"Charmillon ☆",type:"grass",rarity:"IR"},{n:220,name:"Papinox ☆",type:"grass",rarity:"IR"},{n:221,name:"Rozbouton ☆",type:"grass",rarity:"IR"},{n:222,name:"Volcaropod de Luth ☆",type:"fire",rarity:"IR"},{n:223,name:"Chamallot ☆",type:"fire",rarity:"IR"},{n:224,name:"Malamandre ☆",type:"fire",rarity:"IR"},{n:225,name:"Flambino ☆",type:"fire",rarity:"IR"},{n:226,name:"Psykokwak ☆",type:"water",rarity:"IR"},{n:227,name:"Stalgamin ☆",type:"water",rarity:"IR"},{n:228,name:"Dimoret ☆",type:"water",rarity:"IR"},{n:229,name:"Iguolta ☆",type:"electric",rarity:"IR"},{n:230,name:"Lucanon ☆",type:"electric",rarity:"IR"},{n:231,name:"Frégatane de Donna ☆",type:"electric",rarity:"IR"},{n:232,name:"Marill ☆",type:"psychic",rarity:"IR"},{n:233,name:"Feuforêve ☆",type:"psychic",rarity:"IR"},{n:234,name:"Branette ☆",type:"psychic",rarity:"IR"},{n:235,name:"Togekiss ☆",type:"psychic",rarity:"IR"},{n:236,name:"Cupcanaille ☆",type:"psychic",rarity:"IR"},{n:237,name:"Desséliande de Nabil ☆",type:"psychic",rarity:"IR"},{n:238,name:"Mimiqui de la TR ☆",type:"psychic",rarity:"IR"},{n:239,name:"Triopikeur de la TR ☆",type:"fighting",rarity:"IR"},{n:240,name:"Kapoera ☆",type:"fighting",rarity:"IR"},{n:241,name:"Charmina ☆",type:"fighting",rarity:"IR"},{n:242,name:"Strassie ☆",type:"fighting",rarity:"IR"},{n:243,name:"Grahyèna ☆",type:"darkness",rarity:"IR"},{n:244,name:"Spiritomb de Cynthia ☆",type:"darkness",rarity:"IR"},{n:245,name:"Ixon de Galar ☆",type:"darkness",rarity:"IR"},{n:246,name:"Mystibule ☆",type:"steel",rarity:"IR"},{n:247,name:"Fantyrm ☆",type:"dragon",rarity:"IR"},{n:248,name:"Dispareptil ☆",type:"dragon",rarity:"IR"},{n:249,name:"Étouraptor de Tonio ☆",type:"colorless",rarity:"IR"},{n:250,name:"Motisma Hélice ☆",type:"colorless",rarity:"IR"},
+  {n:251,name:"Poussacha ex ☆",type:"grass",rarity:"UR"},{n:252,name:"Limonde ex ☆",type:"fighting",rarity:"UR"},{n:253,name:"Méga-Nanméouïe ex ☆",type:"colorless",rarity:"UR"},{n:254,name:"Anthéa & Concordia ☆",type:"trainer",rarity:"UR"},{n:255,name:"Entraînement Karaté ☆",type:"trainer",rarity:"UR"},{n:256,name:"Ordres du Boss ☆",type:"trainer",rarity:"UR"},{n:257,name:"Canari ☆",type:"trainer",rarity:"UR"},{n:258,name:"Tchéren ☆",type:"trainer",rarity:"UR"},{n:259,name:"Rattrape-Riposte ☆",type:"trainer",rarity:"UR"},{n:260,name:"Trompette en Verre ☆",type:"trainer",rarity:"UR"},{n:261,name:"Tour Brouillage ☆",type:"trainer",rarity:"UR"},{n:262,name:"PP Plus de N ☆",type:"trainer",rarity:"UR"},{n:263,name:"Émetteur-Récepteur TR ☆",type:"trainer",rarity:"UR"},{n:264,name:"Hyper Ball ☆",type:"trainer",rarity:"UR"},
+  {n:265,name:"Méga-Momartik ex SAR",type:"water",rarity:"SAR"},{n:266,name:"Méga-Ohmassacre ex SAR",type:"electric",rarity:"SAR"},{n:267,name:"Méga-Diancie ex SAR",type:"fighting",rarity:"SAR"},{n:268,name:"Méga-Brutalibré ex SAR",type:"fighting",rarity:"SAR"},{n:269,name:"Méga-Ectoplasma ex SAR",type:"darkness",rarity:"SAR"},{n:270,name:"Méga-Baggaïd ex SAR",type:"darkness",rarity:"SAR"},{n:271,name:"Méga-Dracolosse ex SAR",type:"dragon",rarity:"SAR"},{n:272,name:"Méga-Méganium ex SAR",type:"grass",rarity:"SAR"},{n:273,name:"Méga-Roitiflam ex SAR",type:"fire",rarity:"SAR"},{n:274,name:"Méga-Aligatueur ex SAR",type:"water",rarity:"SAR"},{n:275,name:"Méga-Momartik ex SAR ✦",type:"water",rarity:"SAR"},{n:276,name:"Pikachu ex SAR",type:"electric",rarity:"SAR"},{n:277,name:"Pikachu ex SAR ✦",type:"electric",rarity:"SAR"},{n:278,name:"Méga-Ohmassacre ex SAR ✦",type:"electric",rarity:"SAR"},{n:279,name:"Ampibidou ex Donna SAR",type:"electric",rarity:"SAR"},{n:280,name:"Mélofée ex Lilie SAR",type:"psychic",rarity:"SAR"},{n:281,name:"Mewtwo ex TR SAR",type:"psychic",rarity:"SAR"},{n:282,name:"Méga-Diancie ex SAR ✦",type:"fighting",rarity:"SAR"},{n:283,name:"Méga-Brutalibré ex SAR ✦",type:"fighting",rarity:"SAR"},{n:284,name:"Méga-Ectoplasma ex SAR ✦",type:"darkness",rarity:"SAR"},{n:285,name:"Méga-Baggaïd ex SAR ✦",type:"darkness",rarity:"SAR"},{n:286,name:"Zoroark ex de N SAR",type:"darkness",rarity:"SAR"},{n:287,name:"Angoliath ex Rosemary SAR",type:"darkness",rarity:"SAR"},{n:288,name:"Fézandipiti ex SAR",type:"darkness",rarity:"SAR"},{n:289,name:"Métalosse ex Pierre SAR",type:"steel",rarity:"SAR"},{n:290,name:"Méga-Dracolosse ex SAR ✦",type:"dragon",rarity:"SAR"},
+  {n:291,name:"Canari MA",type:"trainer",rarity:"MA"},{n:292,name:"Esprit Combatif d'Iris MA",type:"trainer",rarity:"MA"},{n:293,name:"Surfeur MA",type:"trainer",rarity:"MA"},
+  {n:294,name:"Méga-Dracaufeu Y ex GOLD",type:"fire",rarity:"GOLD"},{n:295,name:"Méga-Dracolosse ex GOLD",type:"dragon",rarity:"GOLD"},
+];
+
+const TYPE_META = {grass:{icon:"🌿"},fire:{icon:"🔥"},water:{icon:"💧"},electric:{icon:"⚡"},psychic:{icon:"🔮"},fighting:{icon:"👊"},darkness:{icon:"🌑"},steel:{icon:"⚙️"},dragon:{icon:"🐉"},colorless:{icon:"⭐"},trainer:{icon:"🎒"},energy:{icon:"✨"}};
+const RARITY_SYM = {C:"●",U:"◆",R:"★",RR:"★★",IR:"🎨",UR:"💎",SAR:"🌟",MA:"⚔️",GOLD:"👑"};
+const RARITY_COLOR = {C:"#475569",U:"#475569",R:"#c084fc",RR:"#fbbf24",IR:"#da70d6",UR:"#00bfff",SAR:"#ff6eb4",MA:"#ff4500",GOLD:"#ffd700"};
+
+// ==================== STATE ====================
+let currentUser = null;
+let owned = new Set();
+let filterType = "all";
+let filterStatus = "missing";
+let filterRarity = "all";
+let searchText = "";
+let saveTimeout = null;
+
+// ==================== AUTH ====================
+function renderAuth() {
+  let isLogin = true;
+  const el = document.getElementById("auth-screen");
+  
+  function draw() {
+    el.innerHTML = `
+      <div class="auth-box">
+        <div style="text-align:center;font-size:32px;margin-bottom:8px">🎴</div>
+        <h1>PokéTracker</h1>
+        <p class="subtitle">ME2.5 — Héros Transcendants</p>
+        <div id="auth-error" class="auth-error"></div>
+        <input class="auth-input" id="auth-email" type="email" placeholder="Email" autocomplete="email">
+        <input class="auth-input" id="auth-pass" type="password" placeholder="Mot de passe" autocomplete="${isLogin ? 'current-password' : 'new-password'}">
+        <button class="auth-btn primary" id="auth-submit">${isLogin ? 'Se connecter' : 'Créer un compte'}</button>
+        <div class="auth-divider">ou</div>
+        <button class="auth-btn google" id="auth-google">🔵 Continuer avec Google</button>
+        <div class="auth-toggle">${isLogin ? "Pas de compte ?" : "Déjà un compte ?"} <span id="auth-switch">${isLogin ? "S'inscrire" : "Se connecter"}</span></div>
+      </div>`;
+    
+    document.getElementById("auth-switch").onclick = () => { isLogin = !isLogin; draw(); };
+    document.getElementById("auth-submit").onclick = async () => {
+      const email = document.getElementById("auth-email").value.trim();
+      const pass = document.getElementById("auth-pass").value;
+      const errEl = document.getElementById("auth-error");
+      if (!email || !pass) { errEl.textContent = "Remplis tous les champs"; return; }
+      if (!isLogin && pass.length < 6) { errEl.textContent = "6 caractères minimum"; return; }
+      try {
+        errEl.textContent = "";
+        if (isLogin) await signInWithEmailAndPassword(auth, email, pass);
+        else await createUserWithEmailAndPassword(auth, email, pass);
+      } catch (e) {
+        const msgs = {"auth/invalid-credential":"Email ou mot de passe incorrect","auth/email-already-in-use":"Cet email est déjà utilisé","auth/weak-password":"Mot de passe trop faible","auth/invalid-email":"Email invalide","auth/too-many-requests":"Trop de tentatives, réessaie plus tard"};
+        errEl.textContent = msgs[e.code] || e.message;
+      }
+    };
+    document.getElementById("auth-google").onclick = async () => {
+      try { await signInWithPopup(auth, googleProvider); }
+      catch (e) { document.getElementById("auth-error").textContent = e.message; }
+    };
+    // Enter key
+    el.querySelectorAll(".auth-input").forEach(inp => {
+      inp.onkeydown = (e) => { if (e.key === "Enter") document.getElementById("auth-submit").click(); };
+    });
+  }
+  draw();
+}
+
+// ==================== FIRESTORE ====================
+async function loadCollection(uid) {
+  try {
+    const snap = await getDoc(doc(db, "collections", uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      owned = new Set(data.cards || []);
+    } else {
+      owned = new Set();
+    }
+  } catch (e) {
+    console.error("Load error:", e);
+    owned = new Set();
+  }
+}
+
+async function saveCollection(uid) {
+  const indicator = document.getElementById("saving-indicator");
+  indicator.style.display = "block";
+  try {
+    await setDoc(doc(db, "collections", uid), {
+      cards: [...owned],
+      updatedAt: new Date().toISOString(),
+      email: currentUser.email || ""
+    });
+  } catch (e) {
+    console.error("Save error:", e);
+  }
+  setTimeout(() => { indicator.style.display = "none"; }, 800);
+}
+
+function debouncedSave() {
+  if (saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => saveCollection(currentUser.uid), 1200);
+}
+
+// ==================== RENDER APP ====================
+function renderApp() {
+  const totalCards = CARDS.length;
+  const haveCount = owned.size;
+  const missingCount = totalCards - haveCount;
+  const pct = Math.round((haveCount / totalCards) * 100);
+
+  // Type stats
+  const byType = {};
+  CARDS.forEach(c => {
+    if (!byType[c.type]) byType[c.type] = {total:0, have:0};
+    byType[c.type].total++;
+    if (owned.has(c.n)) byType[c.type].have++;
+  });
+
+  // Filter
+  const filtered = CARDS.filter(c => {
+    if (filterType !== "all" && c.type !== filterType) return false;
+    if (filterRarity !== "all" && c.rarity !== filterRarity) return false;
+    if (filterStatus === "owned" && !owned.has(c.n)) return false;
+    if (filterStatus === "missing" && owned.has(c.n)) return false;
+    if (searchText) {
+      const q = searchText.toLowerCase();
+      if (!c.name.toLowerCase().includes(q) && !String(c.n).includes(q)) return false;
+    }
+    return true;
+  });
+
+  const gradientFill = pct === 100 ? "linear-gradient(90deg,#4ade80,#22d3ee)" : "linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899)";
+
+  document.getElementById("app-screen").innerHTML = `
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="header-title"><span style="font-size:24px">🎴</span><h1>PokéTracker</h1></div>
+          <div class="header-sub">ME2.5 — Héros Transcendants • ${totalCards} cartes</div>
+        </div>
+        <div class="user-info">
+          <span class="user-email">${currentUser.email || ""}</span>
+          <button class="logout-btn" id="logout-btn">Déco</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-top">
+        <span class="progress-pct">${pct}%</span>
+        <span class="progress-count">${haveCount}/${totalCards} — <span style="color:var(--red)">${missingCount} manquantes</span></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${gradientFill}"></div></div>
+    </div>
+
+    <div class="type-chips">
+      ${Object.entries(byType).map(([t, s]) => `
+        <div class="type-chip ${filterType === t ? 'active' : ''}" data-type="${t}" style="${filterType === t ? `color:${RARITY_COLOR.RR};border-color:${RARITY_COLOR.RR}50` : ''}">
+          <span style="font-size:10px">${TYPE_META[t]?.icon || ''}</span>
+          <span class="chip-count">${s.have}/${s.total}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="controls">
+      <div class="filter-row">
+        ${[{k:"missing",l:`Manquantes (${missingCount})`,c:"var(--red)"},{k:"owned",l:`Possédées (${haveCount})`,c:"var(--green)"},{k:"all",l:"Toutes",c:"var(--text2)"}].map(b => `
+          <button class="filter-btn ${filterStatus === b.k ? 'active' : ''}" data-status="${b.k}" style="${filterStatus === b.k ? `color:${b.c};border-color:${b.c}` : ''}">${b.l}</button>
+        `).join('')}
+      </div>
+      <input class="search-input" id="search-input" type="text" placeholder="🔍 Rechercher une carte..." value="${searchText}">
+      <div class="rarity-row">
+        ${[{k:"all",l:"Toutes",c:"#94a3b8"},{k:"C",l:"● C",c:"#64748b"},{k:"U",l:"◆ UC",c:"#64748b"},{k:"R",l:"★ R",c:"#c084fc"},{k:"RR",l:"★★ RR",c:"#fbbf24"},{k:"IR",l:"🎨 IR",c:"#da70d6"},{k:"UR",l:"💎 UR",c:"#00bfff"},{k:"SAR",l:"🌟 SAR",c:"#ff6eb4"},{k:"MA",l:"⚔️ MA",c:"#ff4500"},{k:"GOLD",l:"👑 Gold",c:"#ffd700"}].map(r => `
+          <button class="rarity-btn ${filterRarity === r.k ? 'active' : ''}" data-rarity="${r.k}" style="${filterRarity === r.k ? `color:${r.c};border-color:${r.c}` : ''}">${r.l}</button>
+        `).join('')}
+      </div>
+      <div class="results-info"><span>${filtered.length} carte${filtered.length > 1 ? 's' : ''}</span></div>
+    </div>
+
+    <div class="card-list" id="card-list">
+      ${filtered.length === 0 ? `<div class="empty-state"><span class="empty-icon">${filterStatus === 'missing' ? '🎉' : '🔍'}</span>${filterStatus === 'missing' ? 'Tout est complet !' : 'Aucune carte trouvée'}</div>` :
+        filtered.map(c => {
+          const isOwned = owned.has(c.n);
+          const isSecret = c.n > 217;
+          let extraClass = isOwned ? 'owned' : 'missing';
+          if (isSecret && !isOwned) extraClass += ' secret' + (c.rarity === 'SAR' ? ' sar' : c.rarity === 'GOLD' ? ' gold' : c.rarity === 'MA' ? ' ma' : '');
+          return `<div class="card-row ${extraClass}" data-n="${c.n}">
+            <div class="check ${isOwned ? 'checked' : ''}">${isOwned ? '✓' : ''}</div>
+            <span class="card-num">${String(c.n).padStart(3,'0')}</span>
+            <span class="card-icon">${TYPE_META[c.type]?.icon || ''}</span>
+            <span class="card-name">${c.name}</span>
+            <span class="card-rarity" style="color:${RARITY_COLOR[c.rarity] || '#475569'}">${RARITY_SYM[c.rarity] || ''}</span>
+          </div>`;
+        }).join('')
+      }
+    </div>`;
+
+  // Event listeners
+  document.getElementById("logout-btn").onclick = () => signOut(auth);
+  
+  document.getElementById("search-input").oninput = (e) => {
+    searchText = e.target.value;
+    renderApp();
+    document.getElementById("search-input").focus();
+  };
+
+  document.querySelectorAll(".filter-btn").forEach(b => {
+    b.onclick = () => { filterStatus = b.dataset.status; renderApp(); };
+  });
+  document.querySelectorAll(".rarity-btn").forEach(b => {
+    b.onclick = () => { filterRarity = filterRarity === b.dataset.rarity ? "all" : b.dataset.rarity; renderApp(); };
+  });
+  document.querySelectorAll(".type-chip").forEach(b => {
+    b.onclick = () => { filterType = filterType === b.dataset.type ? "all" : b.dataset.type; renderApp(); };
+  });
+
+  document.querySelectorAll(".card-row").forEach(row => {
+    row.onclick = () => {
+      const n = parseInt(row.dataset.n);
+      if (owned.has(n)) owned.delete(n); else owned.add(n);
+      debouncedSave();
+      renderApp();
+    };
+  });
+}
+
+// ==================== AUTH STATE ====================
+onAuthStateChanged(auth, async (user) => {
+  document.getElementById("loading-screen").style.display = "none";
+  if (user) {
+    currentUser = user;
+    document.getElementById("auth-screen").style.display = "none";
+    document.getElementById("app-screen").style.display = "block";
+    await loadCollection(user.uid);
+    renderApp();
+  } else {
+    currentUser = null;
+    owned = new Set();
+    document.getElementById("auth-screen").style.display = "flex";
+    document.getElementById("app-screen").style.display = "none";
+    renderAuth();
+  }
+});
+</script>
+
+</body>
+</html>

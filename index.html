@@ -559,44 +559,43 @@ function renderApp() {
     };
   });
 
-  // Lazy load thumbnails - fetch set data once, cache image URLs
+  // Lazy load thumbnails - fetch set once from TCGdex, fallback to pokemontcg.io
   const si = getSetInfo();
-  let thumbMap = null;
   
-  async function loadThumbMap() {
-    if (thumbMap) return thumbMap;
-    for (const sid of si.tcgdexIds) {
-      for (const lang of ['fr','en']) {
-        try {
-          const r = await fetch(`https://api.tcgdex.net/v2/${lang}/sets/${sid}`);
-          if (!r.ok) continue;
-          const data = await r.json();
-          if (data.cards && data.cards.length > 0) {
-            thumbMap = {};
-            data.cards.forEach(c => { if (c.image) thumbMap[c.localId] = c.image; });
-            return thumbMap;
-          }
-        } catch(e) { continue; }
+  // Global cache: resolved once per set switch
+  if (!window._thumbMapPromise || window._thumbMapSet !== si.id) {
+    window._thumbMapSet = si.id;
+    window._thumbMapPromise = (async () => {
+      // Try TCGdex first
+      for (const sid of si.tcgdexIds) {
+        for (const lang of ['fr','en']) {
+          try {
+            const r = await fetch(`https://api.tcgdex.net/v2/${lang}/sets/${sid}`);
+            if (!r.ok) continue;
+            const data = await r.json();
+            if (data.cards && data.cards.length > 10) {
+              const map = {};
+              data.cards.forEach(c => { if (c.image) map[c.localId] = c.image; });
+              console.log(`TCGdex thumb map loaded: ${sid} (${lang}), ${Object.keys(map).length} cards. Sample keys:`, Object.keys(map).slice(0,5));
+              return map;
+            }
+          } catch(e) { continue; }
+        }
       }
-    }
-    thumbMap = {};
-    return thumbMap;
+      return null;
+    })();
   }
-  
+
   const thumbObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const img = entry.target;
         const cn = img.dataset.cn;
         thumbObserver.unobserve(img);
-        loadThumbMap().then(map => {
-          const base = map[cn];
-          if (base) {
-            img.src = base + "/low.webp";
-            img.onerror = () => {
-              img.src = base + "/low.png";
-              img.onerror = () => { img.src = base + "/high.png"; img.onerror = () => { img.style.opacity = '0'; }; };
-            };
+        window._thumbMapPromise.then(map => {
+          if (map && map[cn]) {
+            img.src = map[cn] + "/low.webp";
+            img.onerror = () => { img.src = map[cn] + "/low.png"; img.onerror = () => { img.src = map[cn] + "/high.png"; img.onerror = () => { img.style.opacity='0'; }; }; };
           } else {
             img.style.opacity = '0';
           }

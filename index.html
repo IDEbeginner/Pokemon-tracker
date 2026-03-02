@@ -376,6 +376,38 @@ function renderAuth() {
 }
 
 // ==================== FIRESTORE ====================
+// OFFLINE (IndexedDB + SW)
+const IDB_NAME='poketracker-offline',IDB_STORE='collections';
+function openIDB(){return new Promise((r,j)=>{const q=indexedDB.open(IDB_NAME,1);q.onupgradeneeded=()=>q.result.createObjectStore(IDB_STORE);q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)})}
+async function saveLocal(u,d){try{const b=await openIDB(),t=b.transaction(IDB_STORE,'readwrite');t.objectStore(IDB_STORE).put(d,u);await new Promise((r,j)=>{t.oncomplete=r;t.onerror=j})}catch(e){}}
+async function loadLocal(u){try{const b=await openIDB(),t=b.transaction(IDB_STORE,'readonly'),q=t.objectStore(IDB_STORE).get(u);return new Promise((r,j)=>{q.onsuccess=()=>r(q.result||null);q.onerror=j})}catch(e){return null}}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+let isOffline=false;
+
+// Auto-sync when coming back online
+window.addEventListener('online', async () => {
+  if (!currentUser) return;
+  const uid = currentUser.uid;
+  const local = await loadLocal(uid);
+  if (!local || !local.sets) return;
+  try {
+    const snap = await getDoc(doc(db, "collections", uid));
+    let remote = snap.exists() ? snap.data() : {};
+    let remoteSets = remote.sets || {};
+    // Merge: local wins for sets modified offline
+    let merged = { ...remoteSets, ...local.sets };
+    await setDoc(doc(db, "collections", uid), {
+      sets: merged,
+      avatar: local.avatar || remote.avatar || null,
+      updatedAt: new Date().toISOString(),
+      email: currentUser.email || ""
+    });
+    await saveLocal(uid, { sets: merged, avatar: local.avatar || remote.avatar });
+    isOffline = false;
+    console.log("Synced offline changes to Firestore");
+  } catch(e) { console.warn("Sync failed:", e); }
+});
+
 async function loadCollection(uid) {
   try {
     const snap = await getDoc(doc(db, "collections", uid));
@@ -389,12 +421,12 @@ async function loadCollection(uid) {
         owned = new Set();
       }
       if (data.avatar) userAvatar = data.avatar;
-    } else {
-      owned = new Set();
-    }
-  } catch (e) {
-    console.error("Load error:", e);
-    owned = new Set();
+      isOffline=false; await saveLocal(uid,data);
+    } else { owned=new Set(); }
+  } catch(e) {
+    console.warn("Offline mode"); isOffline=true;
+    const local=await loadLocal(uid);
+    if(local){if(local.sets&&local.sets[activeSet])owned=new Set(local.sets[activeSet]);else if(local.cards&&activeSet==="me25")owned=new Set(local.cards);else owned=new Set();if(local.avatar)userAvatar=local.avatar;}else{owned=new Set();}
   }
 }
 
@@ -412,8 +444,9 @@ async function saveCollection(uid) {
       updatedAt: new Date().toISOString(),
       email: currentUser.email || ""
     });
-  } catch (e) {
-    console.error("Save error:", e);
+    await saveLocal(uid,{sets,avatar:userAvatar});
+  } catch(e) {
+    console.error("Save err:",e);try{const lc=await loadLocal(uid);let ls=(lc&&lc.sets)?lc.sets:{};ls[activeSet]=[...owned];await saveLocal(uid,{sets:ls,avatar:userAvatar})}catch(e2){}
   }
   setTimeout(() => { indicator.style.display = "none"; }, 800);
 }

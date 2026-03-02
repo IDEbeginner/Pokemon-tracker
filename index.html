@@ -121,12 +121,12 @@ button{cursor:pointer}
 .card-row{display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:3px;border-radius:10px;cursor:pointer;transition:all .15s;user-select:none;border:1px solid transparent}
 .card-row:hover{transform:translateX(4px)}
 .card-row:active{transform:scale(.99)}
-.card-row.owned{background:rgba(74,222,128,0.04);border-color:rgba(74,222,128,0.1)}
-.card-row.missing{background:rgba(248,113,113,0.03);border-color:rgba(248,113,113,0.06)}
-.card-row.secret{border-color:rgba(218,112,214,0.1)}
-.card-row.secret.sar{border-color:rgba(255,110,180,0.12)}
-.card-row.secret.gold{border-color:rgba(255,215,0,0.15);background:rgba(255,215,0,0.04)}
-.card-row.secret.ma{border-color:rgba(255,69,0,0.12)}
+.card-row.owned{background:rgba(74,222,128,0.10);border-color:rgba(74,222,128,0.25)}
+.card-row.missing{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.15)}
+.card-row.secret{border-color:rgba(218,112,214,0.2)}
+.card-row.secret.sar{border-color:rgba(255,110,180,0.25)}
+.card-row.secret.gold{border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.08)}
+.card-row.secret.ma{border-color:rgba(255,69,0,0.25)}
 .check{width:20px;height:20px;border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:2px solid var(–text4);transition:all .15s;font-size:12px;font-weight:900;color:var(–bg)}
 .check.checked{background:var(–green);border:none}
 .card-num{font-family:‘JetBrains Mono’,monospace;font-size:11px;font-weight:600;color:var(–text3);width:30px;flex-shrink:0;text-align:right}
@@ -134,7 +134,7 @@ button{cursor:pointer}
 .card-thumb.no-img{display:flex;align-items:center;justify-content:center;font-size:14px;color:var(–text4)}
 .card-icon{font-size:13px;flex-shrink:0}
 .card-name{flex:1;font-size:13px;font-weight:500;color:var(–text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.card-row.owned .card-name{color:var(–text3);font-weight:400;text-decoration:line-through;text-decoration-color:var(–text4)}
+.card-row.owned .card-name{color:var(–text2);font-weight:400;text-decoration:line-through;text-decoration-color:rgba(74,222,128,0.4)}
 .card-rarity{font-size:11px;font-weight:700;font-family:‘JetBrains Mono’,monospace;flex-shrink:0}
 .empty-state{text-align:center;padding:60px 20px;color:var(–text4);font-size:15px;font-weight:500}
 .empty-icon{font-size:36px;display:block;margin-bottom:10px}
@@ -559,14 +559,12 @@ function renderApp() {
     };
   });
 
-  // Lazy load thumbnails - fetch set once from TCGdex, fallback to pokemontcg.io
+  // Lazy load thumbnails
   const si = getSetInfo();
   
-  // Global cache: resolved once per set switch
   if (!window._thumbMapPromise || window._thumbMapSet !== si.id) {
     window._thumbMapSet = si.id;
     window._thumbMapPromise = (async () => {
-      // Try TCGdex first
       for (const sid of si.tcgdexIds) {
         for (const lang of ['fr','en']) {
           try {
@@ -575,14 +573,19 @@ function renderApp() {
             const data = await r.json();
             if (data.cards && data.cards.length > 10) {
               const map = {};
-              data.cards.forEach(c => { if (c.image) map[c.localId] = c.image; });
-              console.log(`TCGdex thumb map loaded: ${sid} (${lang}), ${Object.keys(map).length} cards. Sample keys:`, Object.keys(map).slice(0,5));
-              return map;
+              data.cards.forEach(c => {
+                if (!c.image) return;
+                map[c.localId] = c.image;
+                const num = parseInt(c.localId);
+                if (!isNaN(num)) map[String(num)] = c.image;
+              });
+              console.log(`TCGdex: ${sid}/${lang} → ${Object.keys(map).length} entries, sample:`, Object.keys(map).slice(0,8));
+              return { type:'api', map, sid, lang };
             }
           } catch(e) { continue; }
         }
       }
-      return null;
+      return { type:'direct' };
     })();
   }
 
@@ -592,13 +595,28 @@ function renderApp() {
         const img = entry.target;
         const cn = img.dataset.cn;
         thumbObserver.unobserve(img);
-        window._thumbMapPromise.then(map => {
-          if (map && map[cn]) {
-            img.src = map[cn] + "/low.webp";
-            img.onerror = () => { img.src = map[cn] + "/low.png"; img.onerror = () => { img.src = map[cn] + "/high.png"; img.onerror = () => { img.style.opacity='0'; }; }; };
-          } else {
-            img.style.opacity = '0';
+        window._thumbMapPromise.then(result => {
+          let urls = [];
+          if (result.type === 'api' && result.map[cn]) {
+            const b = result.map[cn];
+            urls = [b+"/low.webp", b+"/low.png", b+"/high.webp", b+"/high.png"];
           }
+          // Always add direct asset URLs as fallback
+          for (const sid of si.tcgdexIds) {
+            const serie = sid.startsWith('sv') ? 'sv' : 'me';
+            for (const lang of ['fr','en']) {
+              for (const fmt of ['low.webp','low.png','high.webp','high.png']) {
+                urls.push(`https://assets.tcgdex.net/${lang}/${serie}/${sid}/${cn}/${fmt}`);
+              }
+            }
+          }
+          let idx = 0;
+          function tryNext() {
+            if (idx >= urls.length) { img.style.display='none'; return; }
+            img.src = urls[idx];
+            img.onerror = () => { idx++; tryNext(); };
+          }
+          tryNext();
         });
       }
     });

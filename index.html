@@ -95,6 +95,25 @@ button{cursor:pointer}
 .sealed-row .sealed-name{flex:1;font-size:13px;font-weight:500;color:var(–text)}
 .sealed-row.owned .sealed-name{color:var(–text2);text-decoration:line-through;text-decoration-color:rgba(74,222,128,0.4)}
 .sealed-check{font-size:16px}
+.friend-card{background:var(–card);border:1px solid var(–border);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.friend-avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.friend-avatar img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.friend-info{flex:1;min-width:0}
+.friend-name{font-size:14px;font-weight:600;color:var(–text)}
+.friend-code-small{font-size:11px;color:var(–text3);font-family:monospace}
+.friend-btn{padding:6px 14px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.friend-btn.primary{background:var(–blue);color:white}
+.friend-btn.accept{background:#4ade80;color:#000}
+.friend-btn.reject{background:rgba(248,113,113,0.15);color:#f87171;margin-left:4px}
+.friend-btn.view{background:rgba(96,165,250,0.15);color:#60a5fa}
+.friend-code-box{background:rgba(255,255,255,0.05);border:2px dashed rgba(255,255,255,0.15);border-radius:12px;padding:16px;text-align:center;margin-bottom:16px}
+.friend-code-display{font-size:28px;font-weight:800;letter-spacing:4px;color:#60a5fa;font-family:monospace;margin:6px 0}
+.friend-code-label{font-size:12px;color:var(–text3)}
+.friend-add-row{display:flex;gap:8px;margin-bottom:16px}
+.friend-add-row input{flex:1;padding:10px 14px;border-radius:10px;border:1px solid var(–border);background:rgba(255,255,255,0.06);color:white;font-size:14px;font-family:monospace;text-transform:uppercase;letter-spacing:2px}
+.friend-section-title{font-size:13px;font-weight:700;color:var(–text2);margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+.friend-empty{text-align:center;color:var(–text3);font-size:13px;padding:20px}
+.friend-set-card{background:var(–card);border:1px solid var(–border);border-radius:14px;padding:14px;margin-bottom:10px}
 .account-msg{font-size:12px;margin-top:8px;min-height:16px}
 .account-msg.success{color:var(–green)}
 .account-msg.error{color:var(–red)}
@@ -194,7 +213,7 @@ button{cursor:pointer}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAXXeY_u-uMlGaLo3PV9zPrTDOn24aOsDA",
@@ -360,6 +379,10 @@ const RARITY_COLOR = {C:"#475569",U:"#475569",R:"#c084fc",RR:"#fbbf24",IR:"#da70
 let currentUser = null;
 let owned = new Set();
 let sealedOwned = new Set();
+let myFriendCode = "";
+let friendsList = [];
+let friendRequests = [];
+let viewingFriend = null;
 let filterType = "all";
 let filterStatus = "missing";
 let filterRarity = "all";
@@ -545,6 +568,8 @@ function renderProfileBtn() {
 
 function renderApp() {
   if (currentView === "account") { renderAccountPage(); return; }
+  if (currentView === "friends") { renderFriendsPage(); return; }
+  if (currentView === "friend-collection") { renderFriendCollectionPage(); return; }
   if (currentView === "collections") { renderCollectionsPage(); return; }
   
   const CARDS = getCards();
@@ -598,6 +623,7 @@ function renderApp() {
           </div>
           <button class="pm-item" id="pm-account"><span class="pm-icon"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/town-map.png" style="width:20px;height:20px;image-rendering:pixelated"></span>Mon compte</button>
           <button class="pm-item" id="pm-collections"><span class="pm-icon"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" style="width:20px;height:20px;image-rendering:pixelated"></span>Collections</button>
+          <button class="pm-item" id="pm-friends"><span class="pm-icon"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/friend-ball.png" style="width:20px;height:20px;image-rendering:pixelated"></span>Amis${friendRequests.length > 0 ? ' <span style="background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">'+friendRequests.length+'</span>' : ''}</button>
           <div class="pm-sep"></div>
           <button class="pm-item danger" id="pm-logout"><span class="pm-icon"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/escape-rope.png" style="width:20px;height:20px;image-rendering:pixelated"></span>Se déconnecter</button>
         </div>
@@ -671,6 +697,7 @@ function renderApp() {
     document.getElementById("pm-overlay").onclick = () => { menuOpen = false; renderApp(); };
     document.getElementById("pm-account").onclick = () => { menuOpen = false; currentView = "account"; renderApp(); };
     document.getElementById("pm-collections").onclick = () => { menuOpen = false; currentView = "collections"; renderApp(); };
+    document.getElementById("pm-friends").onclick = () => { menuOpen = false; currentView = "friends"; renderApp(); };
     document.getElementById("pm-logout").onclick = () => { menuOpen = false; signOut(auth); };
   }
   
@@ -785,6 +812,307 @@ function renderApp() {
 }
 
 // ==================== ACCOUNT PAGE ====================
+// ==================== FRIENDS SYSTEM ====================
+function generateFriendCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+async function ensureFriendCode() {
+  if (!currentUser) return;
+  try {
+    const snap = await getDoc(doc(db, "users", currentUser.uid));
+    if (snap.exists() && snap.data().friendCode) {
+      myFriendCode = snap.data().friendCode;
+    } else {
+      myFriendCode = generateFriendCode();
+      await setDoc(doc(db, "users", currentUser.uid), {
+        friendCode: myFriendCode,
+        displayName: currentUser.displayName || "Dresseur",
+        avatar: userAvatar,
+        email: currentUser.email || ""
+      }, { merge: true });
+    }
+  } catch (e) { console.warn("Friend code error:", e); }
+}
+
+async function updateUserProfile() {
+  if (!currentUser) return;
+  try {
+    await setDoc(doc(db, "users", currentUser.uid), {
+      displayName: currentUser.displayName || "Dresseur",
+      avatar: userAvatar,
+      email: currentUser.email || ""
+    }, { merge: true });
+  } catch (e) {}
+}
+
+async function loadFriends() {
+  if (!currentUser) return;
+  try {
+    const q1 = query(collection(db, "friends"), where("users", "array-contains", currentUser.uid));
+    const snap = await getDocs(q1);
+    friendsList = [];
+    for (const d of snap.docs) {
+      const data = d.data();
+      const otherUid = data.users.find(u => u !== currentUser.uid);
+      if (otherUid) {
+        const uSnap = await getDoc(doc(db, "users", otherUid));
+        const uData = uSnap.exists() ? uSnap.data() : {};
+        friendsList.push({ docId: d.id, uid: otherUid, name: uData.displayName || "Dresseur", avatar: uData.avatar || null, code: uData.friendCode || "" });
+      }
+    }
+    const q2 = query(collection(db, "friendRequests"), where("to", "==", currentUser.uid), where("status", "==", "pending"));
+    const snap2 = await getDocs(q2);
+    friendRequests = [];
+    for (const d of snap2.docs) {
+      const data = d.data();
+      const uSnap = await getDoc(doc(db, "users", data.from));
+      const uData = uSnap.exists() ? uSnap.data() : {};
+      friendRequests.push({ docId: d.id, fromUid: data.from, name: uData.displayName || "Dresseur", avatar: uData.avatar || null, code: uData.friendCode || "" });
+    }
+  } catch (e) { console.warn("Load friends error:", e); }
+}
+
+async function sendFriendRequest(code) {
+  if (!currentUser) return "Non connect\u00e9";
+  code = code.trim().toUpperCase();
+  if (code === myFriendCode) return "C'est votre propre code !";
+  if (code.length < 4) return "Code invalide";
+  try {
+    const q = query(collection(db, "users"), where("friendCode", "==", code));
+    const snap = await getDocs(q);
+    if (snap.empty) return "Aucun dresseur avec ce code";
+    const targetUid = snap.docs[0].id;
+    const q2 = query(collection(db, "friends"), where("users", "array-contains", currentUser.uid));
+    const fSnap = await getDocs(q2);
+    for (const d of fSnap.docs) { if (d.data().users.includes(targetUid)) return "D\u00e9j\u00e0 amis !"; }
+    const q3 = query(collection(db, "friendRequests"), where("from", "==", currentUser.uid), where("to", "==", targetUid), where("status", "==", "pending"));
+    const rSnap = await getDocs(q3);
+    if (!rSnap.empty) return "Demande d\u00e9j\u00e0 envoy\u00e9e !";
+    await addDoc(collection(db, "friendRequests"), { from: currentUser.uid, to: targetUid, status: "pending", createdAt: new Date().toISOString() });
+    return "ok";
+  } catch (e) { return "Erreur: " + e.message; }
+}
+
+async function acceptFriendRequest(reqDocId, fromUid) {
+  await addDoc(collection(db, "friends"), { users: [currentUser.uid, fromUid], createdAt: new Date().toISOString() });
+  await deleteDoc(doc(db, "friendRequests", reqDocId));
+  await loadFriends();
+}
+
+async function rejectFriendRequest(reqDocId) {
+  await deleteDoc(doc(db, "friendRequests", reqDocId));
+  await loadFriends();
+}
+
+async function removeFriend(friendDocId) {
+  await deleteDoc(doc(db, "friends", friendDocId));
+  await loadFriends();
+}
+
+function renderFriendsPage() {
+  const ITEMS = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items";
+  document.getElementById("app-screen").innerHTML = `
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="header-title"><img src="logo.png" style="width:28px;height:28px;border-radius:6px" alt=""><h1>Pok\u00e9Tracker</h1></div>
+          <div class="header-sub">Amis</div>
+        </div>
+      </div>
+    </div>
+    <div class="account-page">
+      <button class="account-back" id="back-btn">\u2190 Retour au tracker</button>
+      <div class="friend-code-box">
+        <div class="friend-code-label">Mon code ami</div>
+        <div class="friend-code-display">${myFriendCode}</div>
+        <button class="friend-btn primary" id="copy-code" style="margin-top:6px">Copier</button>
+      </div>
+      <div class="friend-add-row">
+        <input type="text" id="add-friend-input" placeholder="Code ami..." maxlength="6">
+        <button class="friend-btn primary" id="add-friend-btn">Ajouter</button>
+      </div>
+      <div class="account-msg" id="msg-friend"></div>
+      ${friendRequests.length > 0 ? `
+        <div class="friend-section-title"><img src="${ITEMS}/friend-ball.png" style="width:16px;height:16px;image-rendering:pixelated"> Demandes re\u00e7ues <span style="background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:50%;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px">${friendRequests.length}</span></div>
+        ${friendRequests.map(r => `
+          <div class="friend-card">
+            <div class="friend-avatar">${r.avatar ? '<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + r.avatar + '.png">' : '<span style="font-size:18px">\ud83d\udc64</span>'}</div>
+            <div class="friend-info">
+              <div class="friend-name">${r.name}</div>
+              <div class="friend-code-small">#${r.code}</div>
+            </div>
+            <button class="friend-btn accept" data-accept="${r.docId}" data-from="${r.fromUid}">Accepter</button>
+            <button class="friend-btn reject" data-reject="${r.docId}">Refuser</button>
+          </div>
+        `).join('')}
+      ` : ''}
+      <div class="friend-section-title"><img src="${ITEMS}/friend-ball.png" style="width:16px;height:16px;image-rendering:pixelated"> Mes amis (${friendsList.length})</div>
+      ${friendsList.length === 0 ? '<div class="friend-empty">Aucun ami pour le moment.<br>Partagez votre code pour commencer !</div>' :
+        friendsList.map(f => `
+          <div class="friend-card">
+            <div class="friend-avatar">${f.avatar ? '<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + f.avatar + '.png">' : '<span style="font-size:18px">\ud83d\udc64</span>'}</div>
+            <div class="friend-info">
+              <div class="friend-name">${f.name}</div>
+              <div class="friend-code-small">#${f.code}</div>
+            </div>
+            <button class="friend-btn view" data-view-uid="${f.uid}" data-view-name="${f.name}" data-view-avatar="${f.avatar || ''}">Voir</button>
+          </div>
+        `).join('')}
+    </div>`;
+  document.getElementById("back-btn").onclick = () => { currentView = "tracker"; renderApp(); };
+  document.getElementById("copy-code").onclick = () => {
+    navigator.clipboard.writeText(myFriendCode).then(() => {
+      const btn = document.getElementById("copy-code");
+      btn.textContent = "Copi\u00e9 !";
+      setTimeout(() => { btn.textContent = "Copier"; }, 1500);
+    });
+  };
+  document.getElementById("add-friend-btn").onclick = async () => {
+    const input = document.getElementById("add-friend-input");
+    const msg = document.getElementById("msg-friend");
+    const result = await sendFriendRequest(input.value);
+    if (result === "ok") {
+      msg.style.color = "#4ade80";
+      msg.textContent = "Demande envoy\u00e9e !";
+      input.value = "";
+    } else {
+      msg.style.color = "#f59e0b";
+      msg.textContent = result;
+    }
+    setTimeout(() => { msg.textContent = ""; }, 3000);
+  };
+  document.querySelectorAll("[data-accept]").forEach(btn => {
+    btn.onclick = async () => { await acceptFriendRequest(btn.dataset.accept, btn.dataset.from); renderFriendsPage(); };
+  });
+  document.querySelectorAll("[data-reject]").forEach(btn => {
+    btn.onclick = async () => { await rejectFriendRequest(btn.dataset.reject); renderFriendsPage(); };
+  });
+  document.querySelectorAll("[data-view-uid]").forEach(btn => {
+    btn.onclick = () => {
+      viewingFriend = { uid: btn.dataset.viewUid, name: btn.dataset.viewName, avatar: btn.dataset.viewAvatar };
+      currentView = "friend-collection";
+      renderApp();
+    };
+  });
+}
+
+let friendViewSet = null;
+let friendData_cache = {};
+
+async function renderFriendCollectionPage() {
+  if (!viewingFriend) { currentView = "friends"; renderApp(); return; }
+  // Load friend data once
+  if (!friendData_cache[viewingFriend.uid]) {
+    try {
+      const snap = await getDoc(doc(db, "collections", viewingFriend.uid));
+      if (snap.exists()) friendData_cache[viewingFriend.uid] = snap.data();
+      else friendData_cache[viewingFriend.uid] = {};
+    } catch (e) { friendData_cache[viewingFriend.uid] = {}; }
+  }
+  const friendData = friendData_cache[viewingFriend.uid];
+  const friendSets = friendData.sets || {};
+  const friendSealed = friendData.sealed || {};
+
+  if (friendViewSet && SETS[friendViewSet]) {
+    // DETAIL VIEW: show cards for selected set
+    const si = SETS[friendViewSet];
+    const fOwned = new Set(friendSets[friendViewSet] || []);
+    const fSealedSet = new Set(friendSealed[friendViewSet] || []);
+    const mainTotal = si.mainCount;
+    const have = si.cards.filter(c => c.n <= mainTotal && fOwned.has(c.n)).length;
+    const pct = mainTotal > 0 ? Math.round(have / mainTotal * 100) : 0;
+    const gradientFill = pct === 100 ? "linear-gradient(90deg,#4ade80,#22d3ee)" : "linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899)";
+    document.getElementById("app-screen").innerHTML = `
+      <div class="header">
+        <div class="header-top">
+          <div>
+            <div class="header-title"><img src="logo.png" style="width:28px;height:28px;border-radius:6px" alt=""><h1>Pok\u00e9Tracker</h1></div>
+            <div class="header-sub"><img src="${si.logo}" style="height:16px;vertical-align:middle;margin-right:4px">${viewingFriend.name} \u2022 ${si.name}</div>
+          </div>
+        </div>
+      </div>
+      <div class="progress-section">
+        <div class="progress-top">
+          <span class="progress-pct">${pct}%</span>
+          <span class="progress-count">${have}/${mainTotal}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${gradientFill}"></div></div>
+      </div>
+      <div class="account-page" style="padding-top:0">
+        <button class="account-back" id="back-btn">\u2190 Retour</button>
+      </div>
+      <div class="card-list" id="card-list">
+        ${si.cards.map(c => {
+          const isOwned = fOwned.has(c.n);
+          const isSecret = c.n > mainTotal;
+          let extraClass = isOwned ? 'owned' : 'missing';
+          if (isSecret && !isOwned) extraClass += ' secret';
+          return '<div class="card-row ' + extraClass + '" style="pointer-events:none">' +
+            '<div class="check ' + (isOwned ? 'checked' : '') + '">' + (isOwned ? '\u2713' : '') + '</div>' +
+            '<span class="card-num">' + String(c.n).padStart(3, '0') + '</span>' +
+            '<span class="card-icon">' + (TYPE_META[c.type] ? TYPE_META[c.type].icon : '') + '</span>' +
+            '<span class="card-name">' + c.name + '</span>' +
+            '<span class="card-rarity" style="color:' + (RARITY_COLOR[c.rarity] || '#475569') + '">' + (RARITY_SYM[c.rarity] || '') + '</span>' +
+            '</div>';
+        }).join('')}
+      </div>
+      ${(si.sealed && si.sealed.length > 0) ? '<div class="card-list" style="padding-top:0"><div class="sealed-section"><div class="friend-section-title" style="margin-top:0">\ud83d\udce6 Scell\u00e9s</div>' +
+        si.sealed.map(s => {
+          const has = fSealedSet.has(s.id);
+          return '<div class="sealed-row ' + (has ? 'owned' : '') + '" style="pointer-events:none"><div class="check ' + (has ? 'checked' : '') + '">' + (has ? '\u2713' : '') + '</div><img class="sealed-icon" src="' + s.img + '" alt=""><span class="sealed-name">' + s.name + '</span></div>';
+        }).join('') + '</div></div>' : ''}`;
+    document.getElementById("back-btn").onclick = () => { friendViewSet = null; renderFriendCollectionPage(); };
+  } else {
+    // OVERVIEW: list all sets
+    document.getElementById("app-screen").innerHTML = `
+      <div class="header">
+        <div class="header-top">
+          <div>
+            <div class="header-title"><img src="logo.png" style="width:28px;height:28px;border-radius:6px" alt=""><h1>Pok\u00e9Tracker</h1></div>
+            <div class="header-sub">Collection de ${viewingFriend.name}</div>
+          </div>
+        </div>
+      </div>
+      <div class="account-page">
+        <button class="account-back" id="back-btn">\u2190 Retour aux amis</button>
+        ${Object.keys(SETS).map(sid => {
+          const si = SETS[sid];
+          const fCards = friendSets[sid] || [];
+          const fOwned = new Set(fCards);
+          const mainTotal = si.mainCount;
+          const have = si.cards.filter(c => c.n <= mainTotal && fOwned.has(c.n)).length;
+          const pct = mainTotal > 0 ? Math.round(have / mainTotal * 100) : 0;
+          const secretTotal = si.cards.filter(c => c.n > mainTotal).length;
+          const secretHave = si.cards.filter(c => c.n > mainTotal && fOwned.has(c.n)).length;
+          const fSealedArr = friendSealed[sid] || [];
+          const fSealedSet = new Set(fSealedArr);
+          const sealedTotal = si.sealed ? si.sealed.length : 0;
+          const sealedHave = si.sealed ? si.sealed.filter(s => fSealedSet.has(s.id)).length : 0;
+          const gradientFill = pct === 100 ? "linear-gradient(90deg,#4ade80,#22d3ee)" : "linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899)";
+          return '<div class="friend-set-card" data-friend-set="' + sid + '" style="cursor:pointer">' +
+            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
+            '<img src="' + si.logo + '" style="height:24px">' +
+            '<div style="flex:1"><div style="font-weight:700;font-size:14px;color:var(--text)">' + si.name + '</div>' +
+            '<div style="font-size:12px;color:var(--text3)">' + have + '/' + mainTotal + ' cartes' +
+            (secretTotal > 0 ? ' \u2022 ' + secretHave + '/' + secretTotal + ' secr\u00e8tes' : '') +
+            (sealedTotal > 0 ? ' \u2022 ' + sealedHave + '/' + sealedTotal + ' scell\u00e9s' : '') +
+            '</div></div>' +
+            '<span style="font-size:18px;font-weight:800;color:' + (pct === 100 ? '#4ade80' : '#60a5fa') + '">' + pct + '%</span></div>' +
+            '<div class="progress-bar" style="height:6px"><div class="progress-fill" style="width:' + pct + '%;background:' + gradientFill + '"></div></div>' +
+            '</div>';
+        }).join('')}
+      </div>`;
+    document.getElementById("back-btn").onclick = () => { friendViewSet = null; friendData_cache = {}; currentView = "friends"; renderApp(); };
+    document.querySelectorAll("[data-friend-set]").forEach(el => {
+      el.onclick = () => { friendViewSet = el.dataset.friendSet; renderFriendCollectionPage(); };
+    });
+  }
+}
+
 function renderAccountPage() {
   const displayName = currentUser.displayName || "";
   const email = currentUser.email || "";
@@ -855,6 +1183,7 @@ function renderAccountPage() {
       const msg = document.getElementById("msg-avatar");
       try {
         await setDoc(doc(db, "collections", currentUser.uid), { avatar: pid }, { merge: true });
+        await updateUserProfile();
         msg.className = "account-msg success"; msg.textContent = "✓ Avatar mis à jour !";
         setTimeout(() => { msg.textContent = ""; }, 2000);
       } catch(e) {
@@ -1046,6 +1375,8 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("auth-screen").style.display = "none";
     document.getElementById("app-screen").style.display = "block";
     await loadCollection(user.uid);
+    await ensureFriendCode();
+    await loadFriends();
     renderApp();
   } else {
     currentUser = null;

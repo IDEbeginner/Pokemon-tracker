@@ -650,9 +650,6 @@ function renderAccountPage() {
 
 // ==================== COLLECTIONS PAGE ====================
 function renderCollectionsPage() {
-  const haveCount = owned.size;
-  const pct = Math.round((haveCount / CARDS.length) * 100);
-  
   document.getElementById("app-screen").innerHTML = `
     <div class="header">
       <div class="header-top">
@@ -664,48 +661,35 @@ function renderCollectionsPage() {
     </div>
     <div class="account-page">
       <button class="account-back" id="back-btn">← Retour au tracker</button>
-      
-      <div class="collection-grid">
-        <div class="collection-card active" id="col-me25">
-          <span class="cc-icon">🎴</span>
+      <div style="font-size:20px;font-weight:800;margin-bottom:20px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent">📦 Collections</div>
+      ${Object.values(SETS).map(s => `
+        <div class="collection-card ${activeSet === s.id ? 'active' : ''}" data-set="${s.id}">
+          <span class="cc-icon">${s.icon}</span>
           <div class="cc-info">
-            <div class="cc-name">ME2.5 — Héros Transcendants</div>
-            <div class="cc-sub">295 cartes • ${haveCount} possédées (${pct}%)</div>
+            <div class="cc-name">${s.name}</div>
+            <div class="cc-sub">${s.cards.length} cartes (${s.mainCount} + ${s.cards.length - s.mainCount} secrètes)</div>
           </div>
-          <span class="cc-badge">Actif</span>
+          <span class="cc-badge ${activeSet === s.id ? '' : 'soon'}">${activeSet === s.id ? '✓ Actif' : 'Ouvrir'}</span>
         </div>
-        
-        <div class="collection-card" style="opacity:0.5;cursor:default">
-          <span class="cc-icon">⚡</span>
-          <div class="cc-info">
-            <div class="cc-name">ME2 — Méga-Évolution</div>
-            <div class="cc-sub">Bientôt disponible</div>
-          </div>
-          <span class="cc-badge soon">Bientôt</span>
-        </div>
-        
-        <div class="collection-card" style="opacity:0.5;cursor:default">
-          <span class="cc-icon">👻</span>
-          <div class="cc-info">
-            <div class="cc-name">ME1.5 — Flammes Fantasmagoriques</div>
-            <div class="cc-sub">Bientôt disponible</div>
-          </div>
-          <span class="cc-badge soon">Bientôt</span>
-        </div>
-
-        <div class="collection-card" style="opacity:0.5;cursor:default">
-          <span class="cc-icon">🌟</span>
-          <div class="cc-info">
-            <div class="cc-name">EV8.5 — Évolutions Prismatiques</div>
-            <div class="cc-sub">Bientôt disponible</div>
-          </div>
-          <span class="cc-badge soon">Bientôt</span>
-        </div>
-      </div>
+      `).join('')}
     </div>`;
 
   document.getElementById("back-btn").onclick = () => { currentView = "tracker"; renderApp(); };
-  document.getElementById("col-me25").onclick = () => { currentView = "tracker"; renderApp(); };
+  document.querySelectorAll(".collection-card").forEach(item => {
+    item.onclick = async () => {
+      const newSet = item.dataset.set;
+      if (newSet !== activeSet) {
+        activeSet = newSet;
+        filterType = "all";
+        filterStatus = "missing";
+        filterRarity = "all";
+        searchText = "";
+        await loadCollection(currentUser.uid);
+      }
+      currentView = "tracker";
+      renderApp();
+    };
+  });
 }
 
 // ==================== CARD PREVIEW ====================

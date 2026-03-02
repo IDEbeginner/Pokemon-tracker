@@ -85,6 +85,16 @@ button{cursor:pointer}
 .avatar-opt:hover{border-color:rgba(255,255,255,0.2);transform:scale(1.08)}
 .avatar-opt.selected{border-color:var(–blue);background:rgba(96,165,250,0.15);box-shadow:0 0 12px rgba(96,165,250,0.3)}
 .avatar-opt img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.sealed-section{margin-top:16px;padding-top:12px;border-top:1px solid var(–border)}
+.sealed-title{font-size:14px;font-weight:700;color:var(–text2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sealed-count{font-size:12px;font-weight:500;color:var(–text3)}
+.sealed-row{display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:3px;border-radius:10px;cursor:pointer;transition:all .15s;user-select:none;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02)}
+.sealed-row:hover{transform:translateX(4px)}
+.sealed-row.owned{background:rgba(74,222,128,0.10);border-color:rgba(74,222,128,0.25)}
+.sealed-row .sealed-icon{width:32px;height:32px;border-radius:6px;object-fit:contain;background:rgba(255,255,255,0.04);padding:2px}
+.sealed-row .sealed-name{flex:1;font-size:13px;font-weight:500;color:var(–text)}
+.sealed-row.owned .sealed-name{color:var(–text2);text-decoration:line-through;text-decoration-color:rgba(74,222,128,0.4)}
+.sealed-check{font-size:16px}
 .account-msg{font-size:12px;margin-top:8px;min-height:16px}
 .account-msg.success{color:var(–green)}
 .account-msg.error{color:var(–red)}
@@ -203,7 +213,18 @@ const googleProvider = new GoogleAuthProvider();
 // ==================== CARD DATA ====================
 const SETS = {
   "me25": {
-    id: "me25", name: "ME2.5 — Héros Transcendants", icon: "⚔️", logo: "https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png", tcgId: "asc", tcgdexIds: ["me02.5"], mainCount: 217,
+    id: "me25", sealed: [
+      {id:'etb',name:'Elite Trainer Box',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'etb-pc',name:'ETB Pokémon Center',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'coll-erika',name:'Collection Erika',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'coll-larry',name:'Collection Larry',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'tech-charma',name:'Tech Sticker Salamèche',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'tech-fantominus',name:'Tech Sticker Fantominus',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'mini-tin',name:'Mini Tin',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'poster-gardevoir',name:'Poster Méga-Gardevoir',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'poster-lucario',name:'Poster Méga-Lucario',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+      {id:'bundle',name:'Booster Bundle',img:'https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png'},
+    ], name: "ME2.5 — Héros Transcendants", icon: "⚔️", logo: "https://pokesymbols.com/images/tcg/sets/logos/ascended-heroes.png", tcgId: "asc", tcgdexIds: ["me02.5"], mainCount: 217,
     cards: [
   {n:1,name:"Mystherbe d'Erika",type:"grass",rarity:"C"},{n:2,name:"Ortide d'Erika",type:"grass",rarity:"U"},{n:3,name:"Rafflesia ex d'Erika",type:"grass",rarity:"RR"},{n:4,name:"Chétiflor d'Erika",type:"grass",rarity:"C"},{n:5,name:"Boustiflor d'Erika",type:"grass",rarity:"U"},{n:6,name:"Empiflor d'Erika",type:"grass",rarity:"U"},{n:7,name:"Saquedeneu d'Erika",type:"grass",rarity:"C"},{n:8,name:"Germignon",type:"grass",rarity:"C"},{n:9,name:"Macronium",type:"grass",rarity:"U"},{n:10,name:"Méga-Méganium ex",type:"grass",rarity:"RR"},{n:11,name:"Chenipotte",type:"grass",rarity:"C"},{n:12,name:"Armulys",type:"grass",rarity:"U"},{n:13,name:"Charmillon",type:"grass",rarity:"U"},{n:14,name:"Blindalys",type:"grass",rarity:"U"},{n:15,name:"Papinox",type:"grass",rarity:"U"},{n:16,name:"Rozbouton",type:"grass",rarity:"C"},{n:17,name:"Larvibule",type:"grass",rarity:"C"},{n:18,name:"Tissenboule de la TR",type:"grass",rarity:"C"},{n:19,name:"Filentrappe de la TR",type:"grass",rarity:"U"},
   {n:20,name:"Salamèche",type:"fire",rarity:"C"},{n:21,name:"Reptincel",type:"fire",rarity:"U"},{n:22,name:"Méga-Dracaufeu Y ex",type:"fire",rarity:"RR"},{n:23,name:"Limagma de Luth",type:"fire",rarity:"C"},{n:24,name:"Volcaropod de Luth",type:"fire",rarity:"U"},{n:25,name:"Entei",type:"fire",rarity:"R"},{n:26,name:"Ho-Oh ex de Luth",type:"fire",rarity:"RR"},{n:27,name:"Chamallot",type:"fire",rarity:"C"},{n:28,name:"Camérupt",type:"fire",rarity:"U"},{n:29,name:"Gruikui",type:"fire",rarity:"C"},{n:30,name:"Grotichon",type:"fire",rarity:"U"},{n:31,name:"Méga-Roitiflam ex",type:"fire",rarity:"RR"},{n:32,name:"Darumarond de N",type:"fire",rarity:"C"},{n:33,name:"Darumacho de N",type:"fire",rarity:"U"},{n:34,name:"Tritox",type:"fire",rarity:"C"},{n:35,name:"Malamandre",type:"fire",rarity:"U"},{n:36,name:"Flambino",type:"fire",rarity:"C"},{n:37,name:"Lapyro",type:"fire",rarity:"U"},{n:38,name:"Pyrobut ex",type:"fire",rarity:"RR"},
@@ -226,7 +247,15 @@ const SETS = {
 ]
   },
   "ev85": {
-    id: "ev85", name: "EV8.5 — Évolutions Prismatiques", icon: "🌟", logo: "https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png", tcgId: "PRE", tcgdexIds: ["sv08.5","sv085","PRE"], mainCount: 131,
+    id: "ev85", sealed: [
+      {id:'etb',name:'Elite Trainer Box',img:'https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png'},
+      {id:'etb-pc',name:'ETB Pokémon Center',img:'https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png'},
+      {id:'mini-tin',name:'Mini Tin',img:'https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png'},
+      {id:'binder',name:'Binder Collection',img:'https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png'},
+      {id:'surprise',name:'Surprise Box',img:'https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png'},
+      {id:'accessory',name:'Accessory Pouch',img:'https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png'},
+      {id:'super-premium',name:'Super Premium Collection',img:'https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png'},
+    ], name: "EV8.5 — Évolutions Prismatiques", icon: "🌟", logo: "https://pokesymbols.com/images/tcg/sets/logos/prismatic-evolutions.png", tcgId: "PRE", tcgdexIds: ["sv08.5","sv085","PRE"], mainCount: 131,
     cards: [
 {n:1,name:"Noeunoeuf",type:"grass",rarity:"C"},{n:2,name:"Noadkoko",type:"grass",rarity:"U"},{n:3,name:"Scarabrute",type:"grass",rarity:"U"},{n:4,name:"Rozbouton",type:"grass",rarity:"C"},{n:5,name:"Phyllali",type:"grass",rarity:"U"},{n:6,name:"Phyllali ex",type:"grass",rarity:"RR"},{n:7,name:"Doudouvet",type:"grass",rarity:"C"},{n:8,name:"Farfaduvet",type:"grass",rarity:"U"},{n:9,name:"Verpom",type:"grass",rarity:"C"},{n:10,name:"Dipplin",type:"grass",rarity:"U"},{n:11,name:"Hydrapple ex",type:"grass",rarity:"RR"},{n:12,name:"Ogerpon ex M. Turquoise",type:"grass",rarity:"RR"},
 {n:13,name:"Pyroli",type:"fire",rarity:"U"},{n:14,name:"Pyroli ex",type:"fire",rarity:"RR"},{n:15,name:"Hélionceau",type:"fire",rarity:"C"},{n:16,name:"Némélios",type:"fire",rarity:"U"},{n:17,name:"Ogerpon ex M. Fourneau",type:"fire",rarity:"RR"},
@@ -247,7 +276,14 @@ const SETS = {
   ]
   },
   "me15": {
-    id: "me15", name: "ME1.5 — Flammes Fantasmagoriques", icon: "👻", logo: "https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png", tcgId: "PFL", tcgdexIds: ["me02","me015","PFL"], mainCount: 94,
+    id: "me15", sealed: [
+      {id:'etb',name:'Elite Trainer Box',img:'https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png'},
+      {id:'etb-pc',name:'ETB Pokémon Center',img:'https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png'},
+      {id:'bundle',name:'Booster Bundle',img:'https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png'},
+      {id:'display',name:'Display 36 Boosters',img:'https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png'},
+      {id:'blister-1',name:'Blister 1 Booster',img:'https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png'},
+      {id:'blister-3',name:'Blister 3 Boosters',img:'https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png'},
+    ], name: "ME1.5 — Flammes Fantasmagoriques", icon: "👻", logo: "https://pokesymbols.com/images/tcg/sets/logos/phantasmal-flames.png", tcgId: "PFL", tcgdexIds: ["me02","me015","PFL"], mainCount: 94,
     cards: [
 {n:1,name:"Mystherbe",type:"grass",rarity:"C"},{n:2,name:"Ortide",type:"grass",rarity:"U"},{n:3,name:"Rafflesia",type:"grass",rarity:"R"},{n:4,name:"Méga-Scarhino ex",type:"grass",rarity:"RR"},{n:5,name:"Nénupiot",type:"grass",rarity:"C"},{n:6,name:"Lombre",type:"grass",rarity:"U"},{n:7,name:"Ludicolo",type:"grass",rarity:"R"},{n:8,name:"Genesect",type:"grass",rarity:"R"},{n:9,name:"Lilliterelle",type:"grass",rarity:"C"},{n:10,name:"Gambex",type:"grass",rarity:"U"},
 {n:11,name:"Salamèche",type:"fire",rarity:"C"},{n:12,name:"Reptincel",type:"fire",rarity:"U"},{n:13,name:"Méga-Dracaufeu X ex",type:"fire",rarity:"RR"},{n:14,name:"Sulfura",type:"fire",rarity:"R"},{n:15,name:"Darumarond",type:"fire",rarity:"C"},{n:16,name:"Darumacho",type:"fire",rarity:"U"},{n:17,name:"Reshiram",type:"fire",rarity:"R"},{n:18,name:"Plumeline ex",type:"fire",rarity:"RR"},{n:19,name:"Charbambin",type:"fire",rarity:"C"},{n:20,name:"Cérulédge",type:"fire",rarity:"U"},
@@ -269,7 +305,14 @@ const SETS = {
   ]
   },
   "me2": {
-    id: "me2", name: "ME2 — Méga-Évolution", icon: "⚡", logo: "https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png", tcgId: "MEG", tcgdexIds: ["me01","me1","MEG"], mainCount: 132,
+    id: "me2", sealed: [
+      {id:'etb',name:'Elite Trainer Box',img:'https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png'},
+      {id:'etb-pc',name:'ETB Pokémon Center',img:'https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png'},
+      {id:'display',name:'Display 36 Boosters',img:'https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png'},
+      {id:'bundle',name:'Booster Bundle',img:'https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png'},
+      {id:'blister-1',name:'Blister 1 Booster',img:'https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png'},
+      {id:'blister-3',name:'Blister 3 Boosters',img:'https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png'},
+    ], name: "ME2 — Méga-Évolution", icon: "⚡", logo: "https://pokesymbols.com/images/tcg/sets/logos/mega-evolution.png", tcgId: "MEG", tcgdexIds: ["me01","me1","MEG"], mainCount: 132,
     cards: [
 {n:1,name:"Bulbizarre",type:"grass",rarity:"C"},{n:2,name:"Herbizarre",type:"grass",rarity:"U"},{n:3,name:"Méga-Florizarre ex",type:"grass",rarity:"RR"},{n:4,name:"Noeunoeuf",type:"grass",rarity:"C"},{n:5,name:"Noadkoko",type:"grass",rarity:"U"},{n:6,name:"Saquedeneu",type:"grass",rarity:"C"},{n:7,name:"Bouldeneu",type:"grass",rarity:"U"},{n:8,name:"Germignon",type:"grass",rarity:"C"},{n:9,name:"Macronium",type:"grass",rarity:"U"},{n:10,name:"Méganium",type:"grass",rarity:"R"},{n:11,name:"Caratroc",type:"grass",rarity:"R"},{n:12,name:"Celebi",type:"grass",rarity:"R"},{n:13,name:"Grainipiot",type:"grass",rarity:"C"},{n:14,name:"Pifeuil",type:"grass",rarity:"U"},{n:15,name:"Tengalice",type:"grass",rarity:"R"},{n:16,name:"Ningale",type:"grass",rarity:"C"},{n:17,name:"Ninjask",type:"grass",rarity:"U"},{n:18,name:"Sancoki",type:"grass",rarity:"R"},
 {n:19,name:"Goupix",type:"fire",rarity:"C"},{n:20,name:"Feunard",type:"fire",rarity:"U"},{n:21,name:"Chamallot",type:"fire",rarity:"C"},{n:22,name:"Méga-Camérupt ex",type:"fire",rarity:"RR"},{n:23,name:"Hélionceau",type:"fire",rarity:"C"},{n:24,name:"Némélios",type:"fire",rarity:"U"},{n:25,name:"Volcanion",type:"fire",rarity:"R"},{n:26,name:"Flambino",type:"fire",rarity:"C"},{n:27,name:"Lapyro",type:"fire",rarity:"U"},{n:28,name:"Pyrobut",type:"fire",rarity:"R"},{n:29,name:"Grillepattes",type:"fire",rarity:"C"},{n:30,name:"Scolocendre",type:"fire",rarity:"U"},{n:31,name:"Chi-Yu",type:"fire",rarity:"R"},
@@ -291,6 +334,22 @@ const SETS = {
 {n:187,name:"Méga-Gardevoir ex GOLD",type:"psychic",rarity:"GOLD"},{n:188,name:"Méga-Lucario ex GOLD",type:"fighting",rarity:"GOLD"}
   ]
   }
+  ,"sv151": {
+    id: "sv151", sealed: [
+      {id:"etb",name:"Elite Trainer Box",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"etb-pc",name:"ETB Pokemon Center",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"upc",name:"Ultra Premium Collection",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"bundle",name:"Booster Bundle",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"binder",name:"Binder Collection",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"poster-mew",name:"Poster Collection Mew",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"poster-mewtwo",name:"Poster Collection Mewtwo",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"mini-tin",name:"Mini Tin",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+      {id:"blister-1",name:"Blister 1 Booster",img:"https://pokesymbols.com/images/tcg/sets/logos/151.png"},
+    ], name: "SV3.5 — 151", icon: "", logo: "https://pokesymbols.com/images/tcg/sets/logos/151.png", tcgId: "mew", tcgdexIds: ["sv03.5"], mainCount: 165,
+    cards: [
+  {n:1,name:"Bulbizarre",type:"grass",rarity:"C"},{n:2,name:"Herbizarre",type:"grass",rarity:"U"},{n:3,name:"Florizarre ex",type:"grass",rarity:"RR"},{n:4,name:"Salameche",type:"fire",rarity:"C"},{n:5,name:"Reptincel",type:"fire",rarity:"U"},{n:6,name:"Dracaufeu ex",type:"fire",rarity:"RR"},{n:7,name:"Carapuce",type:"water",rarity:"C"},{n:8,name:"Carabaffe",type:"water",rarity:"U"},{n:9,name:"Tortank ex",type:"water",rarity:"RR"},{n:10,name:"Chenipan",type:"grass",rarity:"C"},{n:11,name:"Chrysacier",type:"grass",rarity:"U"},{n:12,name:"Papilusion",type:"grass",rarity:"C"},{n:13,name:"Aspicot",type:"grass",rarity:"C"},{n:14,name:"Coconfort",type:"grass",rarity:"U"},{n:15,name:"Dardargnan",type:"grass",rarity:"C"},{n:16,name:"Roucool",type:"normal",rarity:"C"},{n:17,name:"Roucoups",type:"normal",rarity:"U"},{n:18,name:"Roucarnage",type:"normal",rarity:"R"},{n:19,name:"Rattata",type:"normal",rarity:"C"},{n:20,name:"Rattatac",type:"normal",rarity:"U"},{n:21,name:"Piafabec",type:"normal",rarity:"C"},{n:22,name:"Rapasdepic",type:"normal",rarity:"U"},{n:23,name:"Abo",type:"dark",rarity:"C"},{n:24,name:"Arbok ex",type:"dark",rarity:"RR"},{n:25,name:"Pikachu",type:"electric",rarity:"C"},{n:26,name:"Raichu",type:"electric",rarity:"U"},{n:27,name:"Sabelette",type:"fighting",rarity:"C"},{n:28,name:"Sablaireau",type:"fighting",rarity:"R"},{n:29,name:"Nidoran F",type:"dark",rarity:"C"},{n:30,name:"Nidorina",type:"dark",rarity:"U"},{n:31,name:"Nidoqueen",type:"dark",rarity:"R"},{n:32,name:"Nidoran M",type:"dark",rarity:"C"},{n:33,name:"Nidorino",type:"dark",rarity:"U"},{n:34,name:"Nidoking",type:"dark",rarity:"R"},{n:35,name:"Melofee",type:"psychic",rarity:"C"},{n:36,name:"Melodelfe",type:"psychic",rarity:"U"},{n:37,name:"Goupix",type:"fire",rarity:"C"},{n:38,name:"Feunard ex",type:"fire",rarity:"RR"},{n:39,name:"Rondoudou",type:"normal",rarity:"C"},{n:40,name:"Grodoudou ex",type:"normal",rarity:"RR"},{n:41,name:"Nosferapti",type:"dark",rarity:"C"},{n:42,name:"Nosferalto",type:"dark",rarity:"U"},{n:43,name:"Mystherbe",type:"grass",rarity:"C"},{n:44,name:"Ortide",type:"grass",rarity:"U"},{n:45,name:"Rafflesia",type:"grass",rarity:"R"},{n:46,name:"Paras",type:"grass",rarity:"C"},{n:47,name:"Parasect",type:"grass",rarity:"U"},{n:48,name:"Mimitoss",type:"grass",rarity:"C"},{n:49,name:"Aeromite",type:"grass",rarity:"U"},{n:50,name:"Taupiqueur",type:"fighting",rarity:"C"},{n:51,name:"Triopikeur",type:"fighting",rarity:"U"},{n:52,name:"Miaouss",type:"normal",rarity:"C"},{n:53,name:"Persian",type:"normal",rarity:"R"},{n:54,name:"Psykokwak",type:"water",rarity:"C"},{n:55,name:"Akwakwak",type:"water",rarity:"U"},{n:56,name:"Ferosinge",type:"fighting",rarity:"C"},{n:57,name:"Colossinge",type:"fighting",rarity:"R"},{n:58,name:"Caninos",type:"fire",rarity:"C"},{n:59,name:"Arcanin",type:"fire",rarity:"R"},{n:60,name:"Ptitard",type:"water",rarity:"C"},{n:61,name:"Tetarte",type:"water",rarity:"U"},{n:62,name:"Tartard",type:"water",rarity:"R"},{n:63,name:"Abra",type:"psychic",rarity:"C"},{n:64,name:"Kadabra",type:"psychic",rarity:"U"},{n:65,name:"Alakazam ex",type:"psychic",rarity:"RR"},{n:66,name:"Machoc",type:"fighting",rarity:"C"},{n:67,name:"Machopeur",type:"fighting",rarity:"U"},{n:68,name:"Mackogneur",type:"fighting",rarity:"R"},{n:69,name:"Chetiflor",type:"grass",rarity:"C"},{n:70,name:"Boustiflor",type:"grass",rarity:"U"},{n:71,name:"Empiflor",type:"grass",rarity:"R"},{n:72,name:"Tentacool",type:"water",rarity:"C"},{n:73,name:"Tentacruel",type:"water",rarity:"U"},{n:74,name:"Racaillou",type:"fighting",rarity:"C"},{n:75,name:"Gravalanch",type:"fighting",rarity:"U"},{n:76,name:"Grolem ex",type:"fighting",rarity:"RR"},{n:77,name:"Ponyta",type:"fire",rarity:"C"},{n:78,name:"Galopa",type:"fire",rarity:"U"},{n:79,name:"Ramoloss",type:"water",rarity:"C"},{n:80,name:"Flagadoss",type:"water",rarity:"R"},{n:81,name:"Magneti",type:"electric",rarity:"C"},{n:82,name:"Magneton",type:"electric",rarity:"U"},{n:83,name:"Canarticho",type:"normal",rarity:"C"},{n:84,name:"Doduo",type:"normal",rarity:"C"},{n:85,name:"Dodrio",type:"normal",rarity:"R"},{n:86,name:"Otaria",type:"water",rarity:"C"},{n:87,name:"Lamantine",type:"water",rarity:"U"},{n:88,name:"Tadmorv",type:"dark",rarity:"C"},{n:89,name:"Grotadmorv",type:"dark",rarity:"R"},{n:90,name:"Kokiyas",type:"water",rarity:"C"},{n:91,name:"Crustabri",type:"water",rarity:"R"},{n:92,name:"Fantominus",type:"psychic",rarity:"C"},{n:93,name:"Spectrum",type:"psychic",rarity:"U"},{n:94,name:"Ectoplasma",type:"psychic",rarity:"R"},{n:95,name:"Onix",type:"fighting",rarity:"C"},{n:96,name:"Soporifik",type:"psychic",rarity:"U"},{n:97,name:"Hypnomade",type:"psychic",rarity:"R"},{n:98,name:"Krabby",type:"water",rarity:"C"},{n:99,name:"Krabboss",type:"water",rarity:"R"},{n:100,name:"Voltorbe",type:"electric",rarity:"C"},{n:101,name:"Electrode",type:"electric",rarity:"R"},{n:102,name:"Noeunoeuf",type:"grass",rarity:"C"},{n:103,name:"Noadkoko",type:"grass",rarity:"R"},{n:104,name:"Osselait",type:"fighting",rarity:"C"},{n:105,name:"Ossatueur",type:"fighting",rarity:"R"},{n:106,name:"Kicklee",type:"fighting",rarity:"C"},{n:107,name:"Tygnon",type:"fighting",rarity:"C"},{n:108,name:"Excelangue",type:"normal",rarity:"C"},{n:109,name:"Smogo",type:"dark",rarity:"C"},{n:110,name:"Smogogo",type:"dark",rarity:"U"},{n:111,name:"Rhinocorne",type:"fighting",rarity:"C"},{n:112,name:"Rhinoferos",type:"fighting",rarity:"R"},{n:113,name:"Leveinard",type:"normal",rarity:"C"},{n:114,name:"Saquedeneu",type:"grass",rarity:"C"},{n:115,name:"Kangourex ex",type:"normal",rarity:"RR"},{n:116,name:"Hypotrempe",type:"water",rarity:"C"},{n:117,name:"Hypocean",type:"water",rarity:"U"},{n:118,name:"Poissirene",type:"water",rarity:"C"},{n:119,name:"Poissoroy",type:"water",rarity:"U"},{n:120,name:"Stari",type:"water",rarity:"C"},{n:121,name:"Staross",type:"water",rarity:"R"},{n:122,name:"M. Mime",type:"psychic",rarity:"C"},{n:123,name:"Insecateur",type:"grass",rarity:"C"},{n:124,name:"Lippoutou ex",type:"psychic",rarity:"RR"},{n:125,name:"Elektek",type:"electric",rarity:"C"},{n:126,name:"Magmar",type:"fire",rarity:"C"},{n:127,name:"Scarabrute",type:"grass",rarity:"C"},{n:128,name:"Tauros",type:"normal",rarity:"R"},{n:129,name:"Magicarpe",type:"water",rarity:"C"},{n:130,name:"Leviator",type:"water",rarity:"R"},{n:131,name:"Lokhlass",type:"water",rarity:"R"},{n:132,name:"Metamorph",type:"normal",rarity:"C"},{n:133,name:"Evoli",type:"normal",rarity:"C"},{n:134,name:"Aquali",type:"water",rarity:"C"},{n:135,name:"Voltali",type:"electric",rarity:"U"},{n:136,name:"Pyroli",type:"fire",rarity:"U"},{n:137,name:"Porygon",type:"normal",rarity:"C"},{n:138,name:"Amonita",type:"water",rarity:"C"},{n:139,name:"Amonistar",type:"water",rarity:"R"},{n:140,name:"Kabuto",type:"fighting",rarity:"C"},{n:141,name:"Kabutops",type:"fighting",rarity:"R"},{n:142,name:"Ptera",type:"normal",rarity:"R"},{n:143,name:"Ronflex",type:"normal",rarity:"RR"},{n:144,name:"Artikodin",type:"water",rarity:"R"},{n:145,name:"Electhor ex",type:"electric",rarity:"RR"},{n:146,name:"Sulfura",type:"fire",rarity:"R"},{n:147,name:"Minidraco",type:"dragon",rarity:"C"},{n:148,name:"Draco",type:"dragon",rarity:"U"},{n:149,name:"Dracolosse",type:"dragon",rarity:"R"},{n:150,name:"Mewtwo",type:"psychic",rarity:"R"},{n:151,name:"Mew ex",type:"psychic",rarity:"RR"},{n:152,name:"Fossile Dôme Antique",type:"normal",rarity:"U"},{n:153,name:"Fossile Hélice Antique",type:"normal",rarity:"U"},{n:154,name:"Vieil Ambre Antique",type:"normal",rarity:"U"},{n:155,name:"Maxi Ballon",type:"normal",rarity:"U"},{n:156,name:"Transfert de Leo",type:"normal",rarity:"U"},{n:157,name:"Piste Cyclable",type:"normal",rarity:"U"},{n:158,name:"Aide de Nina",type:"normal",rarity:"U"},{n:159,name:"Sticker Énergie",type:"normal",rarity:"U"},{n:160,name:"Invitation d'Erika",type:"normal",rarity:"U"},{n:161,name:"Charisme de Giovanni",type:"normal",rarity:"U"},{n:162,name:"Chopeur",type:"normal",rarity:"U"},{n:163,name:"Restes",type:"normal",rarity:"U"},{n:164,name:"Lunettes Protectrices",type:"normal",rarity:"U"},{n:165,name:"Bandeau Rigide",type:"normal",rarity:"U"},{n:166,name:"Bulbizarre",type:"grass",rarity:"IR"},{n:167,name:"Herbizarre",type:"grass",rarity:"IR"},{n:168,name:"Salameche",type:"fire",rarity:"IR"},{n:169,name:"Reptincel",type:"fire",rarity:"IR"},{n:170,name:"Carapuce",type:"water",rarity:"IR"},{n:171,name:"Carabaffe",type:"water",rarity:"IR"},{n:172,name:"Chenipan",type:"grass",rarity:"IR"},{n:173,name:"Pikachu",type:"electric",rarity:"IR"},{n:174,name:"Nidoking",type:"dark",rarity:"IR"},{n:175,name:"Psykokwak",type:"water",rarity:"IR"},{n:176,name:"Tetarte",type:"water",rarity:"IR"},{n:177,name:"Machopeur",type:"fighting",rarity:"IR"},{n:178,name:"Saquedeneu",type:"grass",rarity:"IR"},{n:179,name:"M. Mime",type:"psychic",rarity:"IR"},{n:180,name:"Amonita",type:"water",rarity:"IR"},{n:181,name:"Draco",type:"dragon",rarity:"IR"},{n:182,name:"Florizarre ex",type:"grass",rarity:"UR"},{n:183,name:"Dracaufeu ex",type:"fire",rarity:"UR"},{n:184,name:"Tortank ex",type:"water",rarity:"UR"},{n:185,name:"Arbok ex",type:"dark",rarity:"UR"},{n:186,name:"Feunard ex",type:"fire",rarity:"UR"},{n:187,name:"Grodoudou ex",type:"normal",rarity:"UR"},{n:188,name:"Alakazam ex",type:"psychic",rarity:"UR"},{n:189,name:"Grolem ex",type:"fighting",rarity:"UR"},{n:190,name:"Kangourex ex",type:"normal",rarity:"UR"},{n:191,name:"Lippoutou ex",type:"psychic",rarity:"UR"},{n:192,name:"Electhor ex",type:"electric",rarity:"UR"},{n:193,name:"Mew ex",type:"psychic",rarity:"UR"},{n:194,name:"Transfert de Leo",type:"normal",rarity:"UR"},{n:195,name:"Aide de Nina",type:"normal",rarity:"UR"},{n:196,name:"Invitation d'Erika",type:"normal",rarity:"UR"},{n:197,name:"Charisme de Giovanni",type:"normal",rarity:"UR"},{n:198,name:"Florizarre ex",type:"grass",rarity:"SAR"},{n:199,name:"Dracaufeu ex",type:"fire",rarity:"SAR"},{n:200,name:"Tortank ex",type:"water",rarity:"SAR"},{n:201,name:"Alakazam ex",type:"psychic",rarity:"SAR"},{n:202,name:"Electhor ex",type:"electric",rarity:"SAR"},{n:203,name:"Invitation d'Erika",type:"normal",rarity:"SAR"},{n:204,name:"Charisme de Giovanni",type:"normal",rarity:"SAR"},{n:205,name:"Mew ex",type:"psychic",rarity:"GOLD"},{n:206,name:"Switch",type:"normal",rarity:"GOLD"},{n:207,name:"Énergie Psy de base",type:"psychic",rarity:"GOLD"}
+  ]
+  }
 };
 
 const TYPE_META = {grass:{icon:"🌿"},fire:{icon:"🔥"},water:{icon:"💧"},electric:{icon:"⚡"},psychic:{icon:"🔮"},fighting:{icon:"👊"},darkness:{icon:"🌑"},steel:{icon:"⚙️"},dragon:{icon:"🐉"},colorless:{icon:"⭐"},trainer:{icon:"🎒"},energy:{icon:"✨"}};
@@ -300,6 +359,7 @@ const RARITY_COLOR = {C:"#475569",U:"#475569",R:"#c084fc",RR:"#fbbf24",IR:"#da70
 // ==================== STATE ====================
 let currentUser = null;
 let owned = new Set();
+let sealedOwned = new Set();
 let filterType = "all";
 let filterStatus = "missing";
 let filterRarity = "all";
@@ -421,12 +481,13 @@ async function loadCollection(uid) {
         owned = new Set();
       }
       if (data.avatar) userAvatar = data.avatar;
+      if (data.sealed && data.sealed[activeSet]) sealedOwned = new Set(data.sealed[activeSet]); else sealedOwned = new Set();
       isOffline=false; await saveLocal(uid,data);
     } else { owned=new Set(); }
   } catch(e) {
     console.warn("Offline mode"); isOffline=true;
     const local=await loadLocal(uid);
-    if(local){if(local.sets&&local.sets[activeSet])owned=new Set(local.sets[activeSet]);else if(local.cards&&activeSet==="me25")owned=new Set(local.cards);else owned=new Set();if(local.avatar)userAvatar=local.avatar;}else{owned=new Set();}
+    if(local){if(local.sets&&local.sets[activeSet])owned=new Set(local.sets[activeSet]);else if(local.cards&&activeSet==="me25")owned=new Set(local.cards);else owned=new Set();if(local.avatar)userAvatar=local.avatar;if(local.sealed&&local.sealed[activeSet])sealedOwned=new Set(local.sealed[activeSet]);else sealedOwned=new Set();}else{owned=new Set();}
   }
 }
 
@@ -439,14 +500,17 @@ async function saveCollection(uid) {
     let sets = existingData.sets || {};
     if (existingData.cards && !sets.me25) sets.me25 = existingData.cards;
     sets[activeSet] = [...owned];
+    let sealedAll = existingData.sealed || {};
+    sealedAll[activeSet] = [...sealedOwned];
     await setDoc(doc(db, "collections", uid), {
       sets: sets,
+      sealed: sealedAll,
       updatedAt: new Date().toISOString(),
       email: currentUser.email || ""
     });
-    await saveLocal(uid,{sets,avatar:userAvatar});
+    await saveLocal(uid,{sets,sealed:sealedAll,avatar:userAvatar});
   } catch(e) {
-    console.error("Save err:",e);try{const lc=await loadLocal(uid);let ls=(lc&&lc.sets)?lc.sets:{};ls[activeSet]=[...owned];await saveLocal(uid,{sets:ls,avatar:userAvatar})}catch(e2){}
+    console.error("Save err:",e);try{const lc=await loadLocal(uid);let ls=(lc&&lc.sets)?lc.sets:{};ls[activeSet]=[...owned];let sl2=(lc&&lc.sealed)?lc.sealed:{};sl2[activeSet]=[...sealedOwned];await saveLocal(uid,{sets:ls,sealed:sl2,avatar:userAvatar})}catch(e2){}
   }
   setTimeout(() => { indicator.style.display = "none"; }, 800);
 }
@@ -501,7 +565,7 @@ function renderApp() {
   // Filter
   const filtered = CARDS.filter(c => {
     if (filterType !== "all" && c.type !== filterType) return false;
-    if (filterRarity !== "all" && c.rarity !== filterRarity) return false;
+    if (filterRarity !== "all" && filterRarity !== "SEALED" && c.rarity !== filterRarity) return false;
     if (filterStatus === "owned" && !owned.has(c.n)) return false;
     if (filterStatus === "missing" && owned.has(c.n)) return false;
     if (searchText) {
@@ -565,13 +629,24 @@ function renderApp() {
       </div>
       <input class="search-input" id="search-input" type="text" placeholder="🔍 Rechercher une carte..." value="${searchText}">
       <div class="rarity-row">
-        ${[{k:"all",l:"Toutes",c:"#94a3b8"},{k:"C",l:"● C",c:"#64748b"},{k:"U",l:"◆ UC",c:"#64748b"},{k:"R",l:"★ R",c:"#c084fc"},{k:"RR",l:"★★ RR",c:"#fbbf24"},{k:"IR",l:"🎨 IR",c:"#da70d6"},{k:"UR",l:"💎 UR",c:"#00bfff"},{k:"SAR",l:"🌟 SAR",c:"#ff6eb4"},{k:"MA",l:"⚔️ MA",c:"#ff4500"},{k:"GOLD",l:"👑 Gold",c:"#ffd700"}].map(r => `
+        ${[{k:"all",l:"Toutes",c:"#94a3b8"},{k:"C",l:"● C",c:"#64748b"},{k:"U",l:"◆ UC",c:"#64748b"},{k:"R",l:"★ R",c:"#c084fc"},{k:"RR",l:"★★ RR",c:"#fbbf24"},{k:"IR",l:"🎨 IR",c:"#da70d6"},{k:"UR",l:"💎 UR",c:"#00bfff"},{k:"SAR",l:"🌟 SAR",c:"#ff6eb4"},{k:"MA",l:"⚔️ MA",c:"#ff4500"},{k:"GOLD",l:"👑 Gold",c:"#ffd700"},{k:"SEALED",l:"📦 Scellés",c:"#f97316"}].map(r => `
           <button class="rarity-btn ${filterRarity === r.k ? 'active' : ''}" data-rarity="${r.k}" style="${filterRarity === r.k ? `color:${r.c};border-color:${r.c}` : ''}">${r.l}</button>
         `).join('')}
       </div>
-      <div class="results-info"><span>${filtered.length} carte${filtered.length > 1 ? 's' : ''}</span></div>
+      ${filterRarity === 'SEALED' ? `<div class="results-info"><span>${setInfo.sealed ? setInfo.sealed.length : 0} scellé${(setInfo.sealed && setInfo.sealed.length > 1) ? 's' : ''}</span></div>` : `<div class="results-info"><span>${filtered.length} carte${filtered.length > 1 ? 's' : ''}</span></div>`}
     </div>
 
+    ${filterRarity === 'SEALED' ? `
+    <div class="card-list" id="card-list">
+      ${(setInfo.sealed && setInfo.sealed.length > 0) ? setInfo.sealed.map(s => {
+        const has = sealedOwned.has(s.id);
+        return `<div class="sealed-row ${has ? 'owned' : ''}" data-sealed="${s.id}">
+          <div class="check ${has ? 'checked' : ''}">${has ? '✓' : ''}</div>
+          <img class="sealed-icon" src="${s.img}" alt="">
+          <span class="sealed-name">${s.name}</span>
+        </div>`;
+      }).join('') : '<div class="empty-state"><span class="empty-icon">📦</span>Aucun scellé pour ce set</div>'}
+    </div>` : `
     <div class="card-list" id="card-list">
       ${filtered.length === 0 ? `<div class="empty-state"><span class="empty-icon">${filterStatus === 'missing' ? '🎉' : '🔍'}</span>${filterStatus === 'missing' ? 'Tout est complet !' : 'Aucune carte trouvée'}</div>` :
         filtered.map(c => {
@@ -590,9 +665,7 @@ function renderApp() {
           </div>`;
         }).join('')
       }
-    </div>`;
-
-  // Profile menu
+    </div>`}`;
   document.getElementById("profile-btn").onclick = () => { menuOpen = !menuOpen; renderApp(); };
   if (menuOpen) {
     document.getElementById("pm-overlay").onclick = () => { menuOpen = false; renderApp(); };
@@ -619,9 +692,19 @@ function renderApp() {
 
   document.querySelectorAll(".card-row").forEach(row => {
     row.onclick = (e) => {
-      if (e.target.closest('.eye-btn')) return; // don't toggle when clicking eye
+      if (e.target.closest('.eye-btn')) return;
       const n = parseInt(row.dataset.n);
       if (owned.has(n)) owned.delete(n); else owned.add(n);
+      debouncedSave();
+      renderApp();
+    };
+  });
+
+  // Sealed row click handlers
+  document.querySelectorAll(".sealed-row").forEach(row => {
+    row.onclick = () => {
+      const sid = row.dataset.sealed;
+      if (sealedOwned.has(sid)) sealedOwned.delete(sid); else sealedOwned.add(sid);
       debouncedSave();
       renderApp();
     };
@@ -967,6 +1050,7 @@ onAuthStateChanged(auth, async (user) => {
   } else {
     currentUser = null;
     owned = new Set();
+    sealedOwned = new Set();
     document.getElementById("auth-screen").style.display = "flex";
     document.getElementById("app-screen").style.display = "none";
     renderAuth();

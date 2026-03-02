@@ -559,38 +559,51 @@ function renderApp() {
     };
   });
 
-  // Lazy load thumbnails with IntersectionObserver
+  // Lazy load thumbnails - fetch set data once, cache image URLs
   const si = getSetInfo();
+  let thumbMap = null;
+  
+  async function loadThumbMap() {
+    if (thumbMap) return thumbMap;
+    for (const sid of si.tcgdexIds) {
+      for (const lang of ['fr','en']) {
+        try {
+          const r = await fetch(`https://api.tcgdex.net/v2/${lang}/sets/${sid}`);
+          if (!r.ok) continue;
+          const data = await r.json();
+          if (data.cards && data.cards.length > 0) {
+            thumbMap = {};
+            data.cards.forEach(c => { if (c.image) thumbMap[c.localId] = c.image; });
+            return thumbMap;
+          }
+        } catch(e) { continue; }
+      }
+    }
+    thumbMap = {};
+    return thumbMap;
+  }
+  
   const thumbObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const img = entry.target;
         const cn = img.dataset.cn;
-        const serie = si.tcgdexIds[0].startsWith('sv') ? 'sv' : 'me';
-        const sid = si.tcgdexIds[0];
-        const urls = [
-          `https://assets.tcgdex.net/fr/${serie}/${sid}/${cn}/low.webp`,
-          `https://assets.tcgdex.net/en/${serie}/${sid}/${cn}/low.webp`,
-          `https://assets.tcgdex.net/fr/${serie}/${sid}/${cn}/low.png`,
-          `https://assets.tcgdex.net/en/${serie}/${sid}/${cn}/low.png`
-        ];
-        let idx = 0;
-        function tryNext() {
-          if (idx >= urls.length) {
-            const ph = document.createElement('div');
-            ph.className = 'card-thumb no-img';
-            ph.textContent = '🃏';
-            img.replaceWith(ph);
-            return;
-          }
-          img.src = urls[idx];
-          img.onerror = () => { idx++; tryNext(); };
-        }
-        tryNext();
         thumbObserver.unobserve(img);
+        loadThumbMap().then(map => {
+          const base = map[cn];
+          if (base) {
+            img.src = base + "/low.webp";
+            img.onerror = () => {
+              img.src = base + "/low.png";
+              img.onerror = () => { img.src = base + "/high.png"; img.onerror = () => { img.style.opacity = '0'; }; };
+            };
+          } else {
+            img.style.opacity = '0';
+          }
+        });
       }
     });
-  }, {rootMargin: '200px'});
+  }, {rootMargin: '300px'});
   document.querySelectorAll(".card-thumb").forEach(img => thumbObserver.observe(img));
 }
 

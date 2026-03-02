@@ -49,12 +49,12 @@ button{cursor:pointer}
 .header-title h1{font-size:20px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .header-sub{font-size:12px;color:var(–text3);margin-left:38px;margin-top:2px}
 .user-info{display:flex;align-items:center;gap:8px}
-.profile-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer}
+.profile-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer;overflow:hidden;padding:0}
 .profile-btn:hover{transform:scale(1.08);border-color:rgba(255,255,255,0.3)}
 .profile-menu{position:absolute;top:60px;right:20px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:14px;width:260px;z-index:150;box-shadow:0 16px 48px rgba(0,0,0,0.6);overflow:hidden;animation:menuSlide .2s}
 @keyframes menuSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 .pm-header{padding:16px;border-bottom:1px solid var(–border)}
-.pm-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.pm-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;padding:0}
 .pm-name{font-size:14px;font-weight:700;color:var(–text);margin-bottom:2px}
 .pm-email{font-size:11px;color:var(–text3);word-break:break-all}
 .pm-item{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:13px;font-weight:600;color:var(–text2);cursor:pointer;transition:background .15s;border:none;background:none;width:100%;text-align:left;font-family:‘Outfit’,sans-serif}
@@ -80,6 +80,11 @@ button{cursor:pointer}
 .account-save{padding:8px 20px;border-radius:8px;border:none;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(–blue),var(–purple));color:#fff;transition:all .2s;font-family:‘Outfit’,sans-serif}
 .account-save:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .account-save:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.avatar-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:8px 0}
+.avatar-opt{width:100%;aspect-ratio:1;border-radius:12px;border:2px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:4px}
+.avatar-opt:hover{border-color:rgba(255,255,255,0.2);transform:scale(1.08)}
+.avatar-opt.selected{border-color:var(–blue);background:rgba(96,165,250,0.15);box-shadow:0 0 12px rgba(96,165,250,0.3)}
+.avatar-opt img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
 .account-msg{font-size:12px;margin-top:8px;min-height:16px}
 .account-msg.success{color:var(–green)}
 .account-msg.error{color:var(–red)}
@@ -383,6 +388,7 @@ async function loadCollection(uid) {
       } else {
         owned = new Set();
       }
+      if (data.avatar) userAvatar = data.avatar;
     } else {
       owned = new Set();
     }
@@ -418,10 +424,26 @@ function debouncedSave() {
 }
 
 // ==================== RENDER APP ====================
+let userAvatar = null;
+
+const AVATARS = [
+  {id:'pikachu',pid:25},{id:'dracaufeu',pid:6},{id:'mewtwo',pid:150},{id:'evoli',pid:133},
+  {id:'dracolosse',pid:149},{id:'leviator',pid:130},{id:'ronflex',pid:143},{id:'lucario',pid:448},
+  {id:'mentali',pid:196},{id:'noctali',pid:197},{id:'tortank',pid:9},{id:'florizarre',pid:3},
+  {id:'gardevoir',pid:282},{id:'gengar',pid:94},{id:'metamorph',pid:132},{id:'mew',pid:151},
+  {id:'absol',pid:359},{id:'rayquaza',pid:384}
+];
+function getAvatarUrl(pid) { return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pid}.png`; }
+
 function getInitials(user) {
   if (user.displayName) return user.displayName.substring(0,2).toUpperCase();
   if (user.email) return user.email.substring(0,2).toUpperCase();
   return "?";
+}
+
+function renderProfileBtn() {
+  if (userAvatar) return `<img src="${getAvatarUrl(userAvatar)}" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated">`;
+  return getInitials(currentUser);
 }
 
 function renderApp() {
@@ -466,21 +488,21 @@ function renderApp() {
           <div class="header-sub"><img src="${setInfo.logo}" alt="" style="height:16px;vertical-align:middle;margin-right:4px">${setInfo.name} • ${totalCards} cartes</div>
         </div>
         <div class="user-info">
-          <button class="profile-btn" id="profile-btn">${getInitials(currentUser)}</button>
+          <button class="profile-btn" id="profile-btn">${renderProfileBtn()}</button>
         </div>
       </div>
       ${menuOpen ? `
         <div class="pm-overlay" id="pm-overlay"></div>
         <div class="profile-menu" id="profile-menu">
           <div class="pm-header">
-            <div class="pm-avatar">${getInitials(currentUser)}</div>
+            <div class="pm-avatar">${renderProfileBtn()}</div>
             <div class="pm-name">${currentUser.displayName || "Dresseur"}</div>
             <div class="pm-email">${currentUser.email || ""}</div>
           </div>
-          <button class="pm-item" id="pm-account"><span class="pm-icon">👤</span>Mon compte</button>
-          <button class="pm-item" id="pm-collections"><span class="pm-icon">📦</span>Collections</button>
+          <button class="pm-item" id="pm-account"><span class="pm-icon"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/trainer-card.png" style="width:20px;height:20px;image-rendering:pixelated"></span>Mon compte</button>
+          <button class="pm-item" id="pm-collections"><span class="pm-icon"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" style="width:20px;height:20px;image-rendering:pixelated"></span>Collections</button>
           <div class="pm-sep"></div>
-          <button class="pm-item danger" id="pm-logout"><span class="pm-icon">🚪</span>Se déconnecter</button>
+          <button class="pm-item danger" id="pm-logout"><span class="pm-icon"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/escape-rope.png" style="width:20px;height:20px;image-rendering:pixelated"></span>Se déconnecter</button>
         </div>
       ` : ''}
     </div>
@@ -666,7 +688,10 @@ function renderAccountPage() {
       
       <div class="account-section">
         <h3>👤 Profil</h3>
-        <div class="account-label">Pseudo</div>
+        <div class="account-label">Avatar</div>
+        <div class="avatar-grid" id="avatar-grid"></div>
+        <div class="account-msg" id="msg-avatar"></div>
+        <div class="account-label" style="margin-top:12px">Pseudo</div>
         <input class="account-input" id="input-name" type="text" placeholder="Mon pseudo" value="${displayName}">
         <button class="account-save" id="save-name">Enregistrer</button>
         <div class="account-msg" id="msg-name"></div>
@@ -699,6 +724,28 @@ function renderAccountPage() {
 
   document.getElementById("back-btn").onclick = () => { currentView = "tracker"; renderApp(); };
   document.getElementById("btn-logout-account").onclick = () => signOut(auth);
+
+  // Render avatar grid
+  const avatarGrid = document.getElementById("avatar-grid");
+  avatarGrid.innerHTML = AVATARS.map(a => 
+    `<div class="avatar-opt ${userAvatar == a.pid ? 'selected' : ''}" data-pid="${a.pid}"><img src="${getAvatarUrl(a.pid)}" alt="${a.id}" loading="lazy"></div>`
+  ).join('');
+  avatarGrid.querySelectorAll('.avatar-opt').forEach(el => {
+    el.onclick = async () => {
+      const pid = Number(el.dataset.pid);
+      userAvatar = pid;
+      avatarGrid.querySelectorAll('.avatar-opt').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      const msg = document.getElementById("msg-avatar");
+      try {
+        await setDoc(doc(db, "collections", currentUser.uid), { avatar: pid }, { merge: true });
+        msg.className = "account-msg success"; msg.textContent = "✓ Avatar mis à jour !";
+        setTimeout(() => { msg.textContent = ""; }, 2000);
+      } catch(e) {
+        msg.className = "account-msg error"; msg.textContent = e.message;
+      }
+    };
+  });
 
   // Save pseudo
   document.getElementById("save-name").onclick = async () => {

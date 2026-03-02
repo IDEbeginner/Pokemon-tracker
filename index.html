@@ -341,7 +341,7 @@ function renderAuth() {
         if (!email) { errEl.style.color = '#f59e0b'; errEl.textContent = "Entre ton email d'abord"; return; }
         try {
           await sendPasswordResetEmail(auth, email);
-          errEl.style.color = '#4ade80'; errEl.textContent = "📧 Email de réinitialisation envoyé !";
+          errEl.style.color = '#4ade80'; errEl.textContent = "Email de réinitialisation envoyé !";
         } catch(e) {
           const msgs = {"auth/invalid-email":"Email invalide","auth/user-not-found":"Aucun compte avec cet email","auth/too-many-requests":"Trop de tentatives, réessaie plus tard"};
           errEl.style.color = ''; errEl.textContent = msgs[e.code] || e.message;
@@ -687,7 +687,7 @@ function renderAccountPage() {
       <button class="account-back" id="back-btn">← Retour au tracker</button>
       
       <div class="account-section">
-        <h3>👤 Profil</h3>
+        <h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/town-map.png" style="width:18px;height:18px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">Profil</h3>
         <div class="account-label">Avatar</div>
         <div class="avatar-grid" id="avatar-grid"></div>
         <div class="account-msg" id="msg-avatar"></div>
@@ -698,7 +698,7 @@ function renderAccountPage() {
       </div>
 
       <div class="account-section">
-        <h3>📧 Email</h3>
+        <h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png" style="width:18px;height:18px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">Email</h3>
         <div class="account-label">Adresse email</div>
         <div class="account-value">${email}</div>
         ${isGoogle ? '<div style="font-size:11px;color:var(--text4);margin-top:6px">Connecté via Google</div>' : ''}
@@ -706,7 +706,7 @@ function renderAccountPage() {
 
       ${!isGoogle ? `
       <div class="account-section">
-        <h3>🔒 Mot de passe</h3>
+        <h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/max-revive.png" style="width:18px;height:18px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">Mot de passe</h3>
         <div class="account-label">Mot de passe actuel</div>
         <input class="account-input" id="input-old-pass" type="password" placeholder="Mot de passe actuel">
         <div class="account-label">Nouveau mot de passe</div>
@@ -717,8 +717,8 @@ function renderAccountPage() {
       ` : ''}
 
       <div class="account-section" style="border-color:rgba(248,113,113,0.15)">
-        <h3>⚠️ Zone dangereuse</h3>
-        <button class="pm-item danger" id="btn-logout-account" style="padding:8px 0">🚪 Se déconnecter</button>
+        <h3><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/flame-orb.png" style="width:18px;height:18px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">Zone dangereuse</h3>
+        <button class="pm-item danger" id="btn-logout-account" style="padding:8px 0"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/escape-rope.png" style="width:18px;height:18px;image-rendering:pixelated;vertical-align:middle;margin-right:4px"> Se déconnecter</button>
       </div>
     </div>`;
 
@@ -798,7 +798,7 @@ function renderCollectionsPage() {
     </div>
     <div class="account-page">
       <button class="account-back" id="back-btn">← Retour au tracker</button>
-      <div style="font-size:20px;font-weight:800;margin-bottom:20px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent">📦 Collections</div>
+      <div style="font-size:20px;font-weight:800;margin-bottom:20px;background:linear-gradient(135deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" style="width:22px;height:22px;image-rendering:pixelated;vertical-align:middle;margin-right:4px"> Collections</div>
       ${Object.values(SETS).map(s => `
         <div class="collection-card ${activeSet === s.id ? 'active' : ''}" data-set="${s.id}">
           <img src="${s.logo}" alt="${s.name}" class="cc-logo">

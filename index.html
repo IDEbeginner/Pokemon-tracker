@@ -5,7 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PokéTracker — Collections Pokémon TCG</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎴</text></svg>">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PokéTracker">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -31,6 +35,8 @@ button{cursor:pointer}
 .auth-toggle{text-align:center;margin-top:16px;font-size:13px;color:var(–text3)}
 .auth-toggle span{color:var(–blue);cursor:pointer;font-weight:600}
 .auth-toggle span:hover{text-decoration:underline}
+.auth-forgot{text-align:center;margin-top:8px;color:#94a3b8;font-size:13px;cursor:pointer;transition:color .2s}
+.auth-forgot:hover{color:#ffffff}
 .auth-error{color:var(–red);font-size:12px;text-align:center;margin-bottom:10px;min-height:16px}
 .auth-divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(–text3);font-size:12px}
 .auth-divider::before,.auth-divider::after{content:’’;flex:1;height:1px;background:var(–border)}
@@ -172,7 +178,7 @@ button{cursor:pointer}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -309,19 +315,34 @@ function renderAuth() {
   function draw() {
     el.innerHTML = `
       <div class="auth-box">
-        <div style="text-align:center;font-size:32px;margin-bottom:8px">🎴</div>
+        <div style="text-align:center;margin-bottom:8px"><img src="logo.png" style="width:80px;height:80px;border-radius:18px" alt="PokéTracker"></div>
         <h1>PokéTracker</h1>
         <p class="subtitle">Gérez vos collections Pokémon TCG</p>
         <div id="auth-error" class="auth-error"></div>
         <input class="auth-input" id="auth-email" type="email" placeholder="Email" autocomplete="email">
         <input class="auth-input" id="auth-pass" type="password" placeholder="Mot de passe" autocomplete="${isLogin ? 'current-password' : 'new-password'}">
         <button class="auth-btn primary" id="auth-submit">${isLogin ? 'Se connecter' : 'Créer un compte'}</button>
+        ${isLogin ? '<div class="auth-forgot" id="auth-forgot">Mot de passe oublié ?</div>' : ''}
         <div class="auth-divider">ou</div>
         <button class="auth-btn google" id="auth-google">🔵 Continuer avec Google</button>
         <div class="auth-toggle">${isLogin ? "Pas de compte ?" : "Déjà un compte ?"} <span id="auth-switch">${isLogin ? "S'inscrire" : "Se connecter"}</span></div>
       </div>`;
     
     document.getElementById("auth-switch").onclick = () => { isLogin = !isLogin; draw(); };
+    if (isLogin) {
+      document.getElementById("auth-forgot").onclick = async () => {
+        const email = document.getElementById("auth-email").value.trim();
+        const errEl = document.getElementById("auth-error");
+        if (!email) { errEl.style.color = '#f59e0b'; errEl.textContent = "Entre ton email d'abord"; return; }
+        try {
+          await sendPasswordResetEmail(auth, email);
+          errEl.style.color = '#4ade80'; errEl.textContent = "📧 Email de réinitialisation envoyé !";
+        } catch(e) {
+          const msgs = {"auth/invalid-email":"Email invalide","auth/user-not-found":"Aucun compte avec cet email","auth/too-many-requests":"Trop de tentatives, réessaie plus tard"};
+          errEl.style.color = ''; errEl.textContent = msgs[e.code] || e.message;
+        }
+      };
+    }
     document.getElementById("auth-submit").onclick = async () => {
       const email = document.getElementById("auth-email").value.trim();
       const pass = document.getElementById("auth-pass").value;
@@ -441,7 +462,7 @@ function renderApp() {
     <div class="header" style="position:relative">
       <div class="header-top">
         <div>
-          <div class="header-title"><span style="font-size:24px">🎴</span><h1>PokéTracker</h1></div>
+          <div class="header-title"><img src="logo.png" style="width:28px;height:28px;border-radius:6px" alt=""><h1>PokéTracker</h1></div>
           <div class="header-sub"><img src="${setInfo.logo}" alt="" style="height:16px;vertical-align:middle;margin-right:4px">${setInfo.name} • ${totalCards} cartes</div>
         </div>
         <div class="user-info">
@@ -635,7 +656,7 @@ function renderAccountPage() {
     <div class="header">
       <div class="header-top">
         <div>
-          <div class="header-title"><span style="font-size:24px">🎴</span><h1>PokéTracker</h1></div>
+          <div class="header-title"><img src="logo.png" style="width:28px;height:28px;border-radius:6px" alt=""><h1>PokéTracker</h1></div>
           <div class="header-sub">Mon compte</div>
         </div>
       </div>
@@ -723,7 +744,7 @@ function renderCollectionsPage() {
     <div class="header">
       <div class="header-top">
         <div>
-          <div class="header-title"><span style="font-size:24px">🎴</span><h1>PokéTracker</h1></div>
+          <div class="header-title"><img src="logo.png" style="width:28px;height:28px;border-radius:6px" alt=""><h1>PokéTracker</h1></div>
           <div class="header-sub">Mes collections</div>
         </div>
       </div>

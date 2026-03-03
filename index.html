@@ -199,8 +199,8 @@ button{cursor:pointer}
 .loading{display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:16px;color:var(–text2)}
 .spinner{width:24px;height:24px;border:3px solid var(–text4);border-top-color:var(–blue);border-radius:50%;animation:spin .6s linear infinite;margin-right:12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-</style>
 
+</style>
 </head>
 <body>
 
@@ -369,9 +369,126 @@ const SETS = {
   {n:1,name:"Bulbizarre",type:"grass",rarity:"C"},{n:2,name:"Herbizarre",type:"grass",rarity:"U"},{n:3,name:"Florizarre ex",type:"grass",rarity:"RR"},{n:4,name:"Salameche",type:"fire",rarity:"C"},{n:5,name:"Reptincel",type:"fire",rarity:"U"},{n:6,name:"Dracaufeu ex",type:"fire",rarity:"RR"},{n:7,name:"Carapuce",type:"water",rarity:"C"},{n:8,name:"Carabaffe",type:"water",rarity:"U"},{n:9,name:"Tortank ex",type:"water",rarity:"RR"},{n:10,name:"Chenipan",type:"grass",rarity:"C"},{n:11,name:"Chrysacier",type:"grass",rarity:"U"},{n:12,name:"Papilusion",type:"grass",rarity:"C"},{n:13,name:"Aspicot",type:"grass",rarity:"C"},{n:14,name:"Coconfort",type:"grass",rarity:"U"},{n:15,name:"Dardargnan",type:"grass",rarity:"C"},{n:16,name:"Roucool",type:"normal",rarity:"C"},{n:17,name:"Roucoups",type:"normal",rarity:"U"},{n:18,name:"Roucarnage",type:"normal",rarity:"R"},{n:19,name:"Rattata",type:"normal",rarity:"C"},{n:20,name:"Rattatac",type:"normal",rarity:"U"},{n:21,name:"Piafabec",type:"normal",rarity:"C"},{n:22,name:"Rapasdepic",type:"normal",rarity:"U"},{n:23,name:"Abo",type:"dark",rarity:"C"},{n:24,name:"Arbok ex",type:"dark",rarity:"RR"},{n:25,name:"Pikachu",type:"electric",rarity:"C"},{n:26,name:"Raichu",type:"electric",rarity:"U"},{n:27,name:"Sabelette",type:"fighting",rarity:"C"},{n:28,name:"Sablaireau",type:"fighting",rarity:"R"},{n:29,name:"Nidoran F",type:"dark",rarity:"C"},{n:30,name:"Nidorina",type:"dark",rarity:"U"},{n:31,name:"Nidoqueen",type:"dark",rarity:"R"},{n:32,name:"Nidoran M",type:"dark",rarity:"C"},{n:33,name:"Nidorino",type:"dark",rarity:"U"},{n:34,name:"Nidoking",type:"dark",rarity:"R"},{n:35,name:"Melofee",type:"psychic",rarity:"C"},{n:36,name:"Melodelfe",type:"psychic",rarity:"U"},{n:37,name:"Goupix",type:"fire",rarity:"C"},{n:38,name:"Feunard ex",type:"fire",rarity:"RR"},{n:39,name:"Rondoudou",type:"normal",rarity:"C"},{n:40,name:"Grodoudou ex",type:"normal",rarity:"RR"},{n:41,name:"Nosferapti",type:"dark",rarity:"C"},{n:42,name:"Nosferalto",type:"dark",rarity:"U"},{n:43,name:"Mystherbe",type:"grass",rarity:"C"},{n:44,name:"Ortide",type:"grass",rarity:"U"},{n:45,name:"Rafflesia",type:"grass",rarity:"R"},{n:46,name:"Paras",type:"grass",rarity:"C"},{n:47,name:"Parasect",type:"grass",rarity:"U"},{n:48,name:"Mimitoss",type:"grass",rarity:"C"},{n:49,name:"Aeromite",type:"grass",rarity:"U"},{n:50,name:"Taupiqueur",type:"fighting",rarity:"C"},{n:51,name:"Triopikeur",type:"fighting",rarity:"U"},{n:52,name:"Miaouss",type:"normal",rarity:"C"},{n:53,name:"Persian",type:"normal",rarity:"R"},{n:54,name:"Psykokwak",type:"water",rarity:"C"},{n:55,name:"Akwakwak",type:"water",rarity:"U"},{n:56,name:"Ferosinge",type:"fighting",rarity:"C"},{n:57,name:"Colossinge",type:"fighting",rarity:"R"},{n:58,name:"Caninos",type:"fire",rarity:"C"},{n:59,name:"Arcanin",type:"fire",rarity:"R"},{n:60,name:"Ptitard",type:"water",rarity:"C"},{n:61,name:"Tetarte",type:"water",rarity:"U"},{n:62,name:"Tartard",type:"water",rarity:"R"},{n:63,name:"Abra",type:"psychic",rarity:"C"},{n:64,name:"Kadabra",type:"psychic",rarity:"U"},{n:65,name:"Alakazam ex",type:"psychic",rarity:"RR"},{n:66,name:"Machoc",type:"fighting",rarity:"C"},{n:67,name:"Machopeur",type:"fighting",rarity:"U"},{n:68,name:"Mackogneur",type:"fighting",rarity:"R"},{n:69,name:"Chetiflor",type:"grass",rarity:"C"},{n:70,name:"Boustiflor",type:"grass",rarity:"U"},{n:71,name:"Empiflor",type:"grass",rarity:"R"},{n:72,name:"Tentacool",type:"water",rarity:"C"},{n:73,name:"Tentacruel",type:"water",rarity:"U"},{n:74,name:"Racaillou",type:"fighting",rarity:"C"},{n:75,name:"Gravalanch",type:"fighting",rarity:"U"},{n:76,name:"Grolem ex",type:"fighting",rarity:"RR"},{n:77,name:"Ponyta",type:"fire",rarity:"C"},{n:78,name:"Galopa",type:"fire",rarity:"U"},{n:79,name:"Ramoloss",type:"water",rarity:"C"},{n:80,name:"Flagadoss",type:"water",rarity:"R"},{n:81,name:"Magneti",type:"electric",rarity:"C"},{n:82,name:"Magneton",type:"electric",rarity:"U"},{n:83,name:"Canarticho",type:"normal",rarity:"C"},{n:84,name:"Doduo",type:"normal",rarity:"C"},{n:85,name:"Dodrio",type:"normal",rarity:"R"},{n:86,name:"Otaria",type:"water",rarity:"C"},{n:87,name:"Lamantine",type:"water",rarity:"U"},{n:88,name:"Tadmorv",type:"dark",rarity:"C"},{n:89,name:"Grotadmorv",type:"dark",rarity:"R"},{n:90,name:"Kokiyas",type:"water",rarity:"C"},{n:91,name:"Crustabri",type:"water",rarity:"R"},{n:92,name:"Fantominus",type:"psychic",rarity:"C"},{n:93,name:"Spectrum",type:"psychic",rarity:"U"},{n:94,name:"Ectoplasma",type:"psychic",rarity:"R"},{n:95,name:"Onix",type:"fighting",rarity:"C"},{n:96,name:"Soporifik",type:"psychic",rarity:"U"},{n:97,name:"Hypnomade",type:"psychic",rarity:"R"},{n:98,name:"Krabby",type:"water",rarity:"C"},{n:99,name:"Krabboss",type:"water",rarity:"R"},{n:100,name:"Voltorbe",type:"electric",rarity:"C"},{n:101,name:"Electrode",type:"electric",rarity:"R"},{n:102,name:"Noeunoeuf",type:"grass",rarity:"C"},{n:103,name:"Noadkoko",type:"grass",rarity:"R"},{n:104,name:"Osselait",type:"fighting",rarity:"C"},{n:105,name:"Ossatueur",type:"fighting",rarity:"R"},{n:106,name:"Kicklee",type:"fighting",rarity:"C"},{n:107,name:"Tygnon",type:"fighting",rarity:"C"},{n:108,name:"Excelangue",type:"normal",rarity:"C"},{n:109,name:"Smogo",type:"dark",rarity:"C"},{n:110,name:"Smogogo",type:"dark",rarity:"U"},{n:111,name:"Rhinocorne",type:"fighting",rarity:"C"},{n:112,name:"Rhinoferos",type:"fighting",rarity:"R"},{n:113,name:"Leveinard",type:"normal",rarity:"C"},{n:114,name:"Saquedeneu",type:"grass",rarity:"C"},{n:115,name:"Kangourex ex",type:"normal",rarity:"RR"},{n:116,name:"Hypotrempe",type:"water",rarity:"C"},{n:117,name:"Hypocean",type:"water",rarity:"U"},{n:118,name:"Poissirene",type:"water",rarity:"C"},{n:119,name:"Poissoroy",type:"water",rarity:"U"},{n:120,name:"Stari",type:"water",rarity:"C"},{n:121,name:"Staross",type:"water",rarity:"R"},{n:122,name:"M. Mime",type:"psychic",rarity:"C"},{n:123,name:"Insecateur",type:"grass",rarity:"C"},{n:124,name:"Lippoutou ex",type:"psychic",rarity:"RR"},{n:125,name:"Elektek",type:"electric",rarity:"C"},{n:126,name:"Magmar",type:"fire",rarity:"C"},{n:127,name:"Scarabrute",type:"grass",rarity:"C"},{n:128,name:"Tauros",type:"normal",rarity:"R"},{n:129,name:"Magicarpe",type:"water",rarity:"C"},{n:130,name:"Leviator",type:"water",rarity:"R"},{n:131,name:"Lokhlass",type:"water",rarity:"R"},{n:132,name:"Metamorph",type:"normal",rarity:"C"},{n:133,name:"Evoli",type:"normal",rarity:"C"},{n:134,name:"Aquali",type:"water",rarity:"C"},{n:135,name:"Voltali",type:"electric",rarity:"U"},{n:136,name:"Pyroli",type:"fire",rarity:"U"},{n:137,name:"Porygon",type:"normal",rarity:"C"},{n:138,name:"Amonita",type:"water",rarity:"C"},{n:139,name:"Amonistar",type:"water",rarity:"R"},{n:140,name:"Kabuto",type:"fighting",rarity:"C"},{n:141,name:"Kabutops",type:"fighting",rarity:"R"},{n:142,name:"Ptera",type:"normal",rarity:"R"},{n:143,name:"Ronflex",type:"normal",rarity:"RR"},{n:144,name:"Artikodin",type:"water",rarity:"R"},{n:145,name:"Electhor ex",type:"electric",rarity:"RR"},{n:146,name:"Sulfura",type:"fire",rarity:"R"},{n:147,name:"Minidraco",type:"dragon",rarity:"C"},{n:148,name:"Draco",type:"dragon",rarity:"U"},{n:149,name:"Dracolosse",type:"dragon",rarity:"R"},{n:150,name:"Mewtwo",type:"psychic",rarity:"R"},{n:151,name:"Mew ex",type:"psychic",rarity:"RR"},{n:152,name:"Fossile Dôme Antique",type:"normal",rarity:"U"},{n:153,name:"Fossile Hélice Antique",type:"normal",rarity:"U"},{n:154,name:"Vieil Ambre Antique",type:"normal",rarity:"U"},{n:155,name:"Maxi Ballon",type:"normal",rarity:"U"},{n:156,name:"Transfert de Leo",type:"normal",rarity:"U"},{n:157,name:"Piste Cyclable",type:"normal",rarity:"U"},{n:158,name:"Aide de Nina",type:"normal",rarity:"U"},{n:159,name:"Sticker Énergie",type:"normal",rarity:"U"},{n:160,name:"Invitation d'Erika",type:"normal",rarity:"U"},{n:161,name:"Charisme de Giovanni",type:"normal",rarity:"U"},{n:162,name:"Chopeur",type:"normal",rarity:"U"},{n:163,name:"Restes",type:"normal",rarity:"U"},{n:164,name:"Lunettes Protectrices",type:"normal",rarity:"U"},{n:165,name:"Bandeau Rigide",type:"normal",rarity:"U"},{n:166,name:"Bulbizarre",type:"grass",rarity:"IR"},{n:167,name:"Herbizarre",type:"grass",rarity:"IR"},{n:168,name:"Salameche",type:"fire",rarity:"IR"},{n:169,name:"Reptincel",type:"fire",rarity:"IR"},{n:170,name:"Carapuce",type:"water",rarity:"IR"},{n:171,name:"Carabaffe",type:"water",rarity:"IR"},{n:172,name:"Chenipan",type:"grass",rarity:"IR"},{n:173,name:"Pikachu",type:"electric",rarity:"IR"},{n:174,name:"Nidoking",type:"dark",rarity:"IR"},{n:175,name:"Psykokwak",type:"water",rarity:"IR"},{n:176,name:"Tetarte",type:"water",rarity:"IR"},{n:177,name:"Machopeur",type:"fighting",rarity:"IR"},{n:178,name:"Saquedeneu",type:"grass",rarity:"IR"},{n:179,name:"M. Mime",type:"psychic",rarity:"IR"},{n:180,name:"Amonita",type:"water",rarity:"IR"},{n:181,name:"Draco",type:"dragon",rarity:"IR"},{n:182,name:"Florizarre ex",type:"grass",rarity:"UR"},{n:183,name:"Dracaufeu ex",type:"fire",rarity:"UR"},{n:184,name:"Tortank ex",type:"water",rarity:"UR"},{n:185,name:"Arbok ex",type:"dark",rarity:"UR"},{n:186,name:"Feunard ex",type:"fire",rarity:"UR"},{n:187,name:"Grodoudou ex",type:"normal",rarity:"UR"},{n:188,name:"Alakazam ex",type:"psychic",rarity:"UR"},{n:189,name:"Grolem ex",type:"fighting",rarity:"UR"},{n:190,name:"Kangourex ex",type:"normal",rarity:"UR"},{n:191,name:"Lippoutou ex",type:"psychic",rarity:"UR"},{n:192,name:"Electhor ex",type:"electric",rarity:"UR"},{n:193,name:"Mew ex",type:"psychic",rarity:"UR"},{n:194,name:"Transfert de Leo",type:"normal",rarity:"UR"},{n:195,name:"Aide de Nina",type:"normal",rarity:"UR"},{n:196,name:"Invitation d'Erika",type:"normal",rarity:"UR"},{n:197,name:"Charisme de Giovanni",type:"normal",rarity:"UR"},{n:198,name:"Florizarre ex",type:"grass",rarity:"SAR"},{n:199,name:"Dracaufeu ex",type:"fire",rarity:"SAR"},{n:200,name:"Tortank ex",type:"water",rarity:"SAR"},{n:201,name:"Alakazam ex",type:"psychic",rarity:"SAR"},{n:202,name:"Electhor ex",type:"electric",rarity:"SAR"},{n:203,name:"Invitation d'Erika",type:"normal",rarity:"SAR"},{n:204,name:"Charisme de Giovanni",type:"normal",rarity:"SAR"},{n:205,name:"Mew ex",type:"psychic",rarity:"GOLD"},{n:206,name:"Switch",type:"normal",rarity:"GOLD"},{n:207,name:"Énergie Psy de base",type:"psychic",rarity:"GOLD"}
   ]
   }
+  ,"base1": {
+    id: "base1", sealed: [
+      {id:"starter-2p",name:"Starter 2 Joueurs",img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"},
+      {id:"booster-dracaufeu",name:"Booster Dracaufeu",img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"},
+      {id:"booster-tortank",name:"Booster Tortank",img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"},
+      {id:"booster-florizarre",name:"Booster Florizarre",img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"},
+    ], name: "Set de Base — Édition 1", icon: "🏆", logo: "base1-logo.jpg", tcgId: "base1", tcgdexIds: ["base1"], mainCount: 102,
+    cards: [
+  // Holo Rares
+  {n:1,name:"Alakazam",type:"psychic",rarity:"R"},
+  {n:2,name:"Tortank",type:"water",rarity:"R"},
+  {n:3,name:"Leveinard",type:"colorless",rarity:"R"},
+  {n:4,name:"Dracaufeu",type:"fire",rarity:"R"},
+  {n:5,name:"Mélofée",type:"colorless",rarity:"R"},
+  {n:6,name:"Léviator",type:"water",rarity:"R"},
+  {n:7,name:"Tygnon",type:"fighting",rarity:"R"},
+  {n:8,name:"Mackogneur",type:"fighting",rarity:"R"},
+  {n:9,name:"Magnéton",type:"electric",rarity:"R"},
+  {n:10,name:"Mewtwo",type:"psychic",rarity:"R"},
+  {n:11,name:"Nidoking",type:"grass",rarity:"R"},
+  {n:12,name:"Feunard",type:"fire",rarity:"R"},
+  {n:13,name:"Tartard",type:"water",rarity:"R"},
+  {n:14,name:"Raichu",type:"electric",rarity:"R"},
+  {n:15,name:"Florizarre",type:"grass",rarity:"R"},
+  {n:16,name:"Électhor",type:"electric",rarity:"R"},
+  // Rares non-holo
+  {n:17,name:"Dardargnan",type:"grass",rarity:"R"},
+  {n:18,name:"Draco",type:"colorless",rarity:"R"},
+  {n:19,name:"Triopikeur",type:"fighting",rarity:"R"},
+  {n:20,name:"Élektek",type:"electric",rarity:"R"},
+  {n:21,name:"Électrode",type:"electric",rarity:"R"},
+  {n:22,name:"Roucoups",type:"colorless",rarity:"R"},
+  {n:23,name:"Arcanin",type:"fire",rarity:"R"},
+  {n:24,name:"Reptincel",type:"fire",rarity:"R"},
+  {n:25,name:"Lamantine",type:"water",rarity:"R"},
+  {n:26,name:"Minidraco",type:"colorless",rarity:"R"},
+  {n:27,name:"Canarticho",type:"colorless",rarity:"R"},
+  {n:28,name:"Caninos",type:"fire",rarity:"R"},
+  {n:29,name:"Spectrum",type:"psychic",rarity:"R"},
+  {n:30,name:"Herbizarre",type:"grass",rarity:"R"},
+  {n:31,name:"Lippoutou",type:"psychic",rarity:"R"},
+  {n:32,name:"Kadabra",type:"psychic",rarity:"R"},
+  // Uncommons
+  {n:33,name:"Coconfort",type:"grass",rarity:"U"},
+  {n:34,name:"Machopeur",type:"fighting",rarity:"U"},
+  {n:35,name:"Magicarpe",type:"water",rarity:"U"},
+  {n:36,name:"Magmar",type:"fire",rarity:"U"},
+  {n:37,name:"Nidorino",type:"grass",rarity:"U"},
+  {n:38,name:"Têtarte",type:"water",rarity:"U"},
+  {n:39,name:"Porygon",type:"colorless",rarity:"U"},
+  {n:40,name:"Rattatac",type:"colorless",rarity:"U"},
+  {n:41,name:"Otaria",type:"water",rarity:"U"},
+  {n:42,name:"Carabaffe",type:"water",rarity:"U"},
+  {n:43,name:"Énergie",type:"trainer",rarity:"U"},
+  // Commons
+  {n:44,name:"Bulbizarre",type:"grass",rarity:"C"},
+  {n:45,name:"Chenipan",type:"grass",rarity:"C"},
+  {n:46,name:"Salamèche",type:"fire",rarity:"C"},
+  {n:47,name:"Taupiqueur",type:"fighting",rarity:"C"},
+  {n:48,name:"Doduo",type:"colorless",rarity:"C"},
+  {n:49,name:"Noeunoeuf",type:"grass",rarity:"C"},
+  {n:50,name:"Racaillou",type:"fighting",rarity:"C"},
+  {n:51,name:"Smogo",type:"grass",rarity:"C"},
+  {n:52,name:"Machoc",type:"fighting",rarity:"C"},
+  {n:53,name:"Magnéti",type:"electric",rarity:"C"},
+  {n:54,name:"Chrysacier",type:"grass",rarity:"C"},
+  {n:55,name:"Nidoran♂",type:"grass",rarity:"C"},
+  {n:56,name:"Onix",type:"fighting",rarity:"C"},
+  {n:57,name:"Pikachu",type:"electric",rarity:"C"},
+  {n:58,name:"Ponyta",type:"fire",rarity:"C"},
+  {n:59,name:"Rattata",type:"colorless",rarity:"C"},
+  {n:60,name:"Sabelette",type:"fighting",rarity:"C"},
+  {n:61,name:"Carapuce",type:"water",rarity:"C"},
+  {n:62,name:"Stari",type:"water",rarity:"C"},
+  {n:63,name:"Saquedeneu",type:"grass",rarity:"C"},
+  {n:64,name:"Voltorbe",type:"electric",rarity:"C"},
+  {n:65,name:"Aspicot",type:"grass",rarity:"C"},
+  {n:66,name:"Fantominus",type:"psychic",rarity:"C"},
+  {n:67,name:"Smogogo",type:"grass",rarity:"C"},
+  {n:68,name:"Gravalanch",type:"fighting",rarity:"C"},
+  {n:69,name:"Férosinge",type:"fighting",rarity:"C"},
+  {n:70,name:"Rondoudou",type:"colorless",rarity:"C"},
+  {n:71,name:"Abra",type:"psychic",rarity:"C"},
+  {n:72,name:"Soporifik",type:"psychic",rarity:"C"},
+  {n:73,name:"Miaouss",type:"colorless",rarity:"C"},
+  {n:74,name:"Mimitoss",type:"grass",rarity:"C"},
+  {n:75,name:"Aéromite",type:"grass",rarity:"C"},
+  {n:76,name:"Nosférapti",type:"grass",rarity:"C"},
+  {n:77,name:"Nidoran♀",type:"grass",rarity:"C"},
+  {n:78,name:"Poissirène",type:"water",rarity:"C"},
+  {n:79,name:"Poissoroy",type:"water",rarity:"C"},
+  {n:80,name:"Tadmorv",type:"grass",rarity:"C"},
+  {n:81,name:"Mystherbe",type:"grass",rarity:"C"},
+  {n:82,name:"Paras",type:"grass",rarity:"C"},
+  {n:83,name:"Ptitard",type:"water",rarity:"C"},
+  {n:84,name:"Ramoloss",type:"psychic",rarity:"C"},
+  {n:85,name:"Staross",type:"water",rarity:"C"},
+  {n:86,name:"Chétiflor",type:"grass",rarity:"C"},
+  // Trainers
+  {n:87,name:"Professeur Chen",type:"trainer",rarity:"U"},
+  {n:88,name:"Éleveur de Pokémon",type:"trainer",rarity:"R"},
+  {n:89,name:"Guérison",type:"trainer",rarity:"U"},
+  {n:90,name:"Échange de Pokémon",type:"trainer",rarity:"R"},
+  {n:91,name:"Super Bonbon",type:"trainer",rarity:"R"},
+  {n:92,name:"Cherche de Pokémon",type:"trainer",rarity:"R"},
+  {n:93,name:"Pokédex",type:"trainer",rarity:"U"},
+  {n:94,name:"Récupération d'Énergie",type:"trainer",rarity:"U"},
+  {n:95,name:"Retrait d'Énergie",type:"trainer",rarity:"R"},
+  {n:96,name:"Super Retrait d'Énergie",type:"trainer",rarity:"R"},
+  {n:97,name:"Bill",type:"trainer",rarity:"C"},
+  {n:98,name:"Sosie",type:"trainer",rarity:"R"},
+  {n:99,name:"Potion",type:"trainer",rarity:"C"},
+  {n:100,name:"Super Potion",type:"trainer",rarity:"U"},
+  {n:101,name:"Switch",type:"trainer",rarity:"C"},
+  {n:102,name:"Rafale de Vent",type:"trainer",rarity:"U"},
+  ]
+  }
 };
 
-const TYPE_META = {grass:{icon:"🌿"},fire:{icon:"🔥"},water:{icon:"💧"},electric:{icon:"⚡"},psychic:{icon:"🔮"},fighting:{icon:"👊"},darkness:{icon:"🌑"},steel:{icon:"⚙️"},dragon:{icon:"🐉"},colorless:{icon:"⭐"},trainer:{icon:"🎒"},energy:{icon:"✨"}};
+const TYPE_META = {grass:{icon:"🌿"},fire:{icon:"🔥"},water:{icon:"💧"},electric:{icon:"⚡"},psychic:{icon:"🔮"},fighting:{icon:"👊"},darkness:{icon:"🌑"},steel:{icon:"⚙️"},dragon:{icon:"🐉"},colorless:{icon:"⭐"},trainer:{icon:"🎒"},energy:{icon:"✨"},normal:{icon:"⭐"}};
 const RARITY_SYM = {C:"●",U:"◆",R:"★",RR:"★★",IR:"🎨",UR:"💎",SAR:"🌟",MA:"⚔️",GOLD:"👑"};
 const RARITY_COLOR = {C:"#475569",U:"#475569",R:"#c084fc",RR:"#fbbf24",IR:"#da70d6",UR:"#00bfff",SAR:"#ff6eb4",MA:"#ff4500",GOLD:"#ffd700"};
 
